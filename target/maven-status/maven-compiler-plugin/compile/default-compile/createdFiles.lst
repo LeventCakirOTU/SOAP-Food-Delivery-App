@@ -1,0 +1,16 @@
+fooddelivery\users\Driver.class
+fooddelivery\model\Menu.class
+fooddelivery\model\MenuItem.class
+fooddelivery\model\DeliveryTask.class
+fooddelivery\model\Location.class
+fooddelivery\services\DeliveryService.class
+fooddelivery\users\RestaurantOwner.class
+fooddelivery\users\User.class
+fooddelivery\model\Order.class
+fooddelivery\services\OrderService.class
+fooddelivery\app\MainApp.class
+fooddelivery\users\Admin.class
+fooddelivery\services\UserService.class
+fooddelivery\model\Restaurant.class
+fooddelivery\services\RestaurantService.class
+fooddelivery\users\Customer.class
