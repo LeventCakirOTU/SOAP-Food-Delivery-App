@@ -17,7 +17,7 @@ public class RestaurantService {
         System.out.println("Registered: " + r.getName());
     }
 
-    // For simplicity, return all restaurants
+    // Returns all restaurants
     public List<Restaurant> findNearbyRestaurants(double latitude, double longitude) {
         return new ArrayList<>(restaurants);
     }

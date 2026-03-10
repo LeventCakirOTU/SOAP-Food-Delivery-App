@@ -51,7 +51,7 @@ public class MainApp {
                     r.getLocation().getLongitude());
         }
 
-        // Optional: sample users
+        // Sample users
         Customer customer = new Customer();
         customer.setId("c1");
         customer.setName("Alice");
@@ -75,6 +75,7 @@ public class MainApp {
 
         User loggedInUser = null;
 
+        // Sign in and login
         while (loggedInUser == null) {
 
             System.out.println("\n=== Welcome ===");
