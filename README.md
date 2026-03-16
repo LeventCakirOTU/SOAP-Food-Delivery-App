@@ -12,7 +12,7 @@ Iteration 3: Not Under Development
 <img width="844" height="451" alt="image" src="https://github.com/user-attachments/assets/da20759c-4acd-4a17-8998-36ec43311753" />
 
 # Basic Setup Instructions:
-Initial IDE Build Tool Requirements: Find pom.xml and add as a maven project. Navigate to Settings>Build,Execution,Deployment>Build Tools>Maven>Runner. From there, select an SDK and enable Delegate IDE build/run actions to Maven.  
+Initial IDE Build Tool Requirements: Find pom.xml in the directory, right click and select add as a maven project. Navigate to Settings>Build,Execution,Deployment>Build Tools>Maven>Runner. From there, select an SDK and enable Delegate IDE build/run actions to Maven.  
 
 To Register and Login:  
 1) Choose to register as either a Customer, Driver or Manager.
