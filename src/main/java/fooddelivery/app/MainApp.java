@@ -23,7 +23,7 @@ public class MainApp {
         UserService userService = new UserService();
         Scanner scanner = new Scanner(System.in);
 
-        // Register sample restaurants
+        // Sample restaurants
         Restaurant r1 = new Restaurant();
         r1.setId("1");
         r1.setName("Restaurant 1");
@@ -42,14 +42,6 @@ public class MainApp {
 
         restaurantService.registerRestaurant(r1);
         restaurantService.registerRestaurant(r2);
-
-        // Display restaurants
-        List<Restaurant> restaurants = restaurantService.findNearbyRestaurants(0, 0);
-        for (Restaurant r : restaurants) {
-            System.out.println(r.getName() + " - " +
-                    r.getLocation().getLatitude() + ", " +
-                    r.getLocation().getLongitude());
-        }
 
         // Sample users
         Customer customer = new Customer();
@@ -75,7 +67,7 @@ public class MainApp {
 
         User loggedInUser = null;
 
-        // Sign in and login
+        // Sign in / login
         while (loggedInUser == null) {
 
             System.out.println("\n=== Welcome ===");
@@ -101,13 +93,10 @@ public class MainApp {
                 String password = scanner.nextLine();
 
                 User newUser = null;
-                if (type.equals("1")) {
-                    newUser = new Customer();
-                } else if (type.equals("2")) {
-                    newUser = new Driver();
-                } else if (type.equals("3")) {
-                    newUser = new RestaurantOwner();
-                } else {
+                if (type.equals("1")) newUser = new Customer();
+                else if (type.equals("2")) newUser = new Driver();
+                else if (type.equals("3")) newUser = new RestaurantOwner();
+                else {
                     System.out.println("Invalid account type.");
                     continue;
                 }
@@ -116,7 +105,6 @@ public class MainApp {
                 newUser.setName(name);
                 newUser.setEmail(email);
                 newUser.setPassword(password);
-
                 userService.registerUser(newUser);
 
             } else if (choice.equals("1")) {
@@ -131,7 +119,7 @@ public class MainApp {
                     loggedInUser = userService.login(email, password);
 
                     if (loggedInUser == null) {
-                        System.out.println("Login failed. Incorrect email or password. Please try again.");
+                        System.out.println("Login failed. Incorrect email or password.");
                     }
                 }
 
@@ -141,6 +129,79 @@ public class MainApp {
         }
 
         System.out.println("Welcome " + loggedInUser.getName());
+
+        // If logged in user is a restaurant owner
+        if (loggedInUser instanceof RestaurantOwner) {
+            RestaurantOwner restaurantOwner = (RestaurantOwner) loggedInUser;
+            boolean done = false;
+
+            while (!done) {
+                System.out.println("\n=== Restaurant Manager Menu ===");
+                System.out.println("1. Add Restaurant");
+                System.out.println("2. View My Restaurants");
+                System.out.println("3. Logout");
+                System.out.print("Choose an option: ");
+                String option = scanner.nextLine();
+
+                switch (option) {
+                    case "1":
+                        Restaurant r = new Restaurant();
+                        r.setId("r" + System.currentTimeMillis());
+
+                        System.out.print("Enter restaurant name: ");
+                        r.setName(scanner.nextLine());
+
+                        Location loc = new Location();
+                        double latitude = 0;
+                        while (true) {
+                            System.out.print("Enter latitude: ");
+                            String latInput = scanner.nextLine();
+                            try {
+                                latitude = Double.parseDouble(latInput);
+                                break; // valid, exit loop
+                            } catch (NumberFormatException e) {
+                                System.out.println("Invalid number. Please try again.");
+                            }
+                        }
+                        loc.setLatitude(latitude);
+
+                        double longitude = 0;
+                        while (true) {
+                            System.out.print("Enter longitude: ");
+                            String lonInput = scanner.nextLine();
+                            try {
+                                longitude = Double.parseDouble(lonInput);
+                                break; // valid, exit loop
+                            } catch (NumberFormatException e) {
+                                System.out.println("Invalid number. Please try again.");
+                            }
+                        }
+                        loc.setLongitude(longitude);
+                        r.setLocation(loc);
+
+                        restaurantOwner.addRestaurant(r, restaurantService);
+                        break;
+
+                    case "2":
+                        System.out.println("Your restaurants:");
+                        for (Restaurant res : restaurantOwner.getRestaurants()) {
+                            System.out.println(res.getName() + " - " +
+                                    res.getLocation().getLatitude() + ", " +
+                                    res.getLocation().getLongitude());
+                        }
+                        break;
+
+                    case "3":
+                        done = true;
+                        System.out.println("Logging out...");
+                        break;
+
+                    default:
+                        System.out.println("Invalid option.");
+                }
+            }
+        }
+
         scanner.close();
     }
 }
