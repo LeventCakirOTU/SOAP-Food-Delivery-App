@@ -1,10 +1,11 @@
-package fooddelivery.users;
+package com.fooddelivery.user;
+import com.fooddelivery.user.User;
 
 public class Admin extends User {
 
     public Admin() {}
 
-    public void removeRestaurant(String restaurantId) {}
-    public void removeMenuItem(String itemId) {}
-    public void editUser(String userId) {}
+    public void manageUsers()       {}
+    public void viewAllOrders()     {}
+    public void manageRestaurants() {}
 }
