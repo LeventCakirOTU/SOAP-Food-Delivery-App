@@ -9,7 +9,7 @@ public class RestaurantOwner extends User {
     public RestaurantOwner() {}
 
     public Restaurant getRestaurant() { return restaurant; }
-    public void setRestaurant(Restaurant restaurant) { this.restaurant = restaurant; }
+    public void setRestaurant(Restaurant r) { this.restaurant = r; }
 
     public void updateMenu() {}
     public void viewOrders() {}
