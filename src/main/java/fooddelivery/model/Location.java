@@ -7,9 +7,9 @@ public class Location {
 
     public Location() {}
 
-    public double getLatitude() { return latitude; }
-    public void setLatitude(double latitude) { this.latitude = latitude; }
+    public double getLatitude()             { return latitude; }
+    public void   setLatitude(double lat)   { this.latitude = lat; }
 
-    public double getLongitude() { return longitude; }
-    public void setLongitude(double longitude) { this.longitude = longitude; }
+    public double getLongitude()             { return longitude; }
+    public void   setLongitude(double lng)   { this.longitude = lng; }
 }

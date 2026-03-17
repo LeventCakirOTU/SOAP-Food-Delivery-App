@@ -1,4 +1,4 @@
-package com.fooddelivery.model;
+package fooddelivery.model;
 
 public class MenuItem {
 

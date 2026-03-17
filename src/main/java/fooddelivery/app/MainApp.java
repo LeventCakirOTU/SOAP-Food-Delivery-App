@@ -1,13 +1,13 @@
-package com.fooddelivery.app;
+package fooddelivery.app;
 
-import com.fooddelivery.model.Location;
-import com.fooddelivery.model.Restaurant;
-import com.fooddelivery.service.RestaurantService;
-import com.fooddelivery.service.UserService;
-import com.fooddelivery.user.Customer;
-import com.fooddelivery.user.Driver;
-import com.fooddelivery.user.RestaurantOwner;
-import com.fooddelivery.ui.MainFrame;
+import fooddelivery.model.Location;
+import fooddelivery.model.Restaurant;
+import fooddelivery.service.RestaurantService;
+import fooddelivery.service.UserService;
+import fooddelivery.user.Customer;
+import fooddelivery.user.Driver;
+import fooddelivery.user.RestaurantOwner;
+import fooddelivery.ui.MainFrame;
 import javax.swing.SwingUtilities;
 
 public class MainApp {

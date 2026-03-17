@@ -1,4 +1,5 @@
-package com.fooddelivery.model;
+package fooddelivery.model;
+
 import java.util.List;
 
 public class Order {
