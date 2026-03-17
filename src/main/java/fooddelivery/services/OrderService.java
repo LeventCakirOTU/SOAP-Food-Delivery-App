@@ -1,13 +1,15 @@
-package fooddelivery.services;
+package com.fooddelivery.service;
 
-import fooddelivery.model.Order;
+import com.fooddelivery.model.DeliveryTask;
+import java.util.ArrayList;
 import java.util.List;
 
-public class OrderService {
+public class DeliveryService {
 
-    public OrderService() {}
+    private final List<DeliveryTask> tasks = new ArrayList<>();
 
-    public void createOrder(Order order) {}
-    public Order getOrder(String orderId) { return null; }
-    public List<Order> getOrdersByCustomer(String customerId) { return null; }
+    public void assignTask(DeliveryTask task)           {}
+    public void updateTaskStatus(String taskId, String status) {}
+    public DeliveryTask getTask(String taskId)          { return null; }
+    public List<DeliveryTask> getTasksByDriver(String driverId) { return new ArrayList<>(); }
 }
