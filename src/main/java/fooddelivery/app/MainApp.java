@@ -1,7 +1,6 @@
 package fooddelivery.app;
 
-import fooddelivery.model.Location;
-import fooddelivery.model.Restaurant;
+import fooddelivery.model.*;
 import fooddelivery.services.RestaurantService;
 import fooddelivery.services.UserService;
 
@@ -11,6 +10,7 @@ import fooddelivery.users.RestaurantOwner;
 import fooddelivery.users.User;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class MainApp {
@@ -23,7 +23,6 @@ public class MainApp {
         UserService userService = new UserService();
         Scanner scanner = new Scanner(System.in);
 
-        // Sample restaurants
         Restaurant r1 = new Restaurant();
         r1.setId("1");
         r1.setName("Restaurant 1");
@@ -40,10 +39,41 @@ public class MainApp {
         loc2.setLongitude(-79.39);
         r2.setLocation(loc2);
 
+        MenuItem r1i1 = new MenuItem();
+        r1i1.setId("m1");
+        r1i1.setName("Chicken");
+        r1i1.setDescription("Grilled chicken");
+        r1i1.setPrice(10.0);
+        r1i1.setCategory("MEAT");
+        r1.addMenuItem(r1i1);
+
+        MenuItem r1i2 = new MenuItem();
+        r1i2.setId("m2");
+        r1i2.setName("Fries");
+        r1i2.setDescription("Crispy fries");
+        r1i2.setPrice(4);
+        r1i2.setCategory("SIDE");
+        r1.addMenuItem(r1i2);
+
+        MenuItem r2i1 = new MenuItem();
+        r2i1.setId("m3");
+        r2i1.setName("Salad");
+        r2i1.setDescription("Fresh salad");
+        r2i1.setPrice(6.01);
+        r2i1.setCategory("VEGETARIAN");
+        r2.addMenuItem(r2i1);
+
+        MenuItem r2i2 = new MenuItem();
+        r2i2.setId("m4");
+        r2i2.setName("Burger");
+        r2i2.setDescription("Beef burger");
+        r2i2.setPrice(9.3);
+        r2i2.setCategory("meat");
+        r2.addMenuItem(r2i2);
+
         restaurantService.registerRestaurant(r1);
         restaurantService.registerRestaurant(r2);
 
-        // Sample users
         Customer customer = new Customer();
         customer.setId("c1");
         customer.setName("Alice");
@@ -65,143 +95,243 @@ public class MainApp {
         owner.setPassword("mikey77");
         userService.registerUser(owner);
 
-        User loggedInUser = null;
+        while (true) {
 
-        // Sign in / login
-        while (loggedInUser == null) {
+            User loggedInUser = null;
 
-            System.out.println("\n=== Welcome ===");
-            System.out.println("1. Login");
-            System.out.println("2. Sign Up");
-            System.out.print("Choose an option: ");
-            String choice = scanner.nextLine();
+            while (loggedInUser == null) {
 
-            if (choice.equals("2")) {
-                System.out.println("\n=== Sign Up ===");
-                System.out.println("Account type:");
-                System.out.println("1. Customer");
-                System.out.println("2. Driver");
-                System.out.println("3. Restaurant Owner");
-                System.out.print("Choose account type: ");
-                String type = scanner.nextLine();
+                System.out.println("\n=== Welcome ===");
+                System.out.println("1. Login");
+                System.out.println("2. Sign Up");
+                System.out.print("Choose an option: ");
+                String choice = scanner.nextLine();
 
-                System.out.print("Enter name: ");
-                String name = scanner.nextLine();
-                System.out.print("Enter email: ");
-                String email = scanner.nextLine();
-                System.out.print("Enter password: ");
-                String password = scanner.nextLine();
+                if (choice.equals("2")) {
+                    System.out.println("\n=== Sign Up ===");
+                    System.out.println("1. Customer\n2. Driver\n3. Restaurant Owner");
+                    String type = scanner.nextLine();
 
-                User newUser = null;
-                if (type.equals("1")) newUser = new Customer();
-                else if (type.equals("2")) newUser = new Driver();
-                else if (type.equals("3")) newUser = new RestaurantOwner();
-                else {
-                    System.out.println("Invalid account type.");
-                    continue;
-                }
-
-                newUser.setId("u" + System.currentTimeMillis());
-                newUser.setName(name);
-                newUser.setEmail(email);
-                newUser.setPassword(password);
-                userService.registerUser(newUser);
-
-            } else if (choice.equals("1")) {
-
-                while (loggedInUser == null) {
-                    System.out.println("\n=== Login ===");
-                    System.out.print("Enter email: ");
+                    System.out.print("Name: ");
+                    String name = scanner.nextLine();
+                    System.out.print("Email: ");
                     String email = scanner.nextLine();
-                    System.out.print("Enter password: ");
+                    System.out.print("Password: ");
                     String password = scanner.nextLine();
 
-                    loggedInUser = userService.login(email, password);
+                    User newUser = null;
+                    if (type.equals("1")) newUser = new Customer();
+                    else if (type.equals("2")) newUser = new Driver();
+                    else if (type.equals("3")) newUser = new RestaurantOwner();
 
-                    if (loggedInUser == null) {
-                        System.out.println("Login failed. Incorrect email or password.");
+                    if (newUser != null) {
+                        newUser.setId("u" + System.currentTimeMillis());
+                        newUser.setName(name);
+                        newUser.setEmail(email);
+                        newUser.setPassword(password);
+                        userService.registerUser(newUser);
+                    }
+
+                } else if (choice.equals("1")) {
+
+                    while (loggedInUser == null) {
+                        System.out.print("Email: ");
+                        String email = scanner.nextLine();
+                        System.out.print("Password: ");
+                        String password = scanner.nextLine();
+
+                        loggedInUser = userService.login(email, password);
+
+                        if (loggedInUser == null) {
+                            System.out.println("Login failed.");
+                        }
                     }
                 }
-
-            } else {
-                System.out.println("Invalid option.");
             }
-        }
 
-        System.out.println("Welcome " + loggedInUser.getName());
+            System.out.println("Welcome " + loggedInUser.getName());
 
-        // If logged in user is a restaurant owner
-        if (loggedInUser instanceof RestaurantOwner) {
-            RestaurantOwner restaurantOwner = (RestaurantOwner) loggedInUser;
-            boolean done = false;
+            if (loggedInUser instanceof RestaurantOwner) {
 
-            while (!done) {
-                System.out.println("\n=== Restaurant Manager Menu ===");
-                System.out.println("1. Add Restaurant");
-                System.out.println("2. View My Restaurants");
-                System.out.println("3. Logout");
-                System.out.print("Choose an option: ");
-                String option = scanner.nextLine();
+                RestaurantOwner restaurantOwner = (RestaurantOwner) loggedInUser;
+                boolean done = false;
 
-                switch (option) {
-                    case "1":
-                        Restaurant r = new Restaurant();
-                        r.setId("r" + System.currentTimeMillis());
+                while (!done) {
+                    System.out.println("\n=== Owner Menu ===");
+                    System.out.println("1. Add Restaurant");
+                    System.out.println("2. View My Restaurants");
+                    System.out.println("3. Add Menu Item");
+                    System.out.println("4. Logout");
 
-                        System.out.print("Enter restaurant name: ");
-                        r.setName(scanner.nextLine());
+                    String option = scanner.nextLine();
 
-                        Location loc = new Location();
-                        double latitude = 0;
-                        while (true) {
-                            System.out.print("Enter latitude: ");
-                            String latInput = scanner.nextLine();
-                            try {
-                                latitude = Double.parseDouble(latInput);
-                                break; // valid, exit loop
-                            } catch (NumberFormatException e) {
-                                System.out.println("Invalid number. Please try again.");
+                    switch (option) {
+
+                        case "1":
+                            Restaurant r = new Restaurant();
+                            r.setId("r" + System.currentTimeMillis());
+
+                            System.out.print("Restaurant name: ");
+                            r.setName(scanner.nextLine());
+
+                            Location loc = new Location();
+                            System.out.print("Latitude: ");
+                            loc.setLatitude(Double.parseDouble(scanner.nextLine()));
+                            System.out.print("Longitude: ");
+                            loc.setLongitude(Double.parseDouble(scanner.nextLine()));
+
+                            r.setLocation(loc);
+                            restaurantOwner.addRestaurant(r, restaurantService);
+                            break;
+
+                        case "2":
+                            for (Restaurant res : restaurantOwner.getRestaurants()) {
+                                System.out.println(res.getName());
                             }
-                        }
-                        loc.setLatitude(latitude);
+                            break;
 
-                        double longitude = 0;
-                        while (true) {
-                            System.out.print("Enter longitude: ");
-                            String lonInput = scanner.nextLine();
-                            try {
-                                longitude = Double.parseDouble(lonInput);
-                                break; // valid, exit loop
-                            } catch (NumberFormatException e) {
-                                System.out.println("Invalid number. Please try again.");
+                        case "3":
+                            List<Restaurant> resList = restaurantOwner.getRestaurants();
+                            if (resList.isEmpty()) {
+                                System.out.println("No restaurants.");
+                                break;
                             }
-                        }
-                        loc.setLongitude(longitude);
-                        r.setLocation(loc);
 
-                        restaurantOwner.addRestaurant(r, restaurantService);
-                        break;
+                            int index = -1;
+                            while (true) {
+                                System.out.println("Select a restaurant:");
+                                for (int i = 0; i < resList.size(); i++) {
+                                    System.out.println(i + 1 + ": " + resList.get(i).getName());
+                                }
+                                System.out.print("Enter number: ");
+                                try {
+                                    index = Integer.parseInt(scanner.nextLine()) - 1;
+                                    if (index >= 0 && index < resList.size()) break;
+                                } catch (Exception e) {}
+                                System.out.println("Invalid selection.");
+                            }
 
-                    case "2":
-                        System.out.println("Your restaurants:");
-                        for (Restaurant res : restaurantOwner.getRestaurants()) {
-                            System.out.println(res.getName() + " - " +
-                                    res.getLocation().getLatitude() + ", " +
-                                    res.getLocation().getLongitude());
-                        }
-                        break;
+                            Restaurant selected = resList.get(index);
 
-                    case "3":
-                        done = true;
-                        System.out.println("Logging out...");
-                        break;
+                            MenuItem item = new MenuItem();
+                            item.setId("m" + System.currentTimeMillis());
 
-                    default:
-                        System.out.println("Invalid option.");
+                            System.out.print("Item name: ");
+                            item.setName(scanner.nextLine());
+
+                            System.out.print("Description: ");
+                            item.setDescription(scanner.nextLine());
+
+                            System.out.print("Price: ");
+                            item.setPrice(Double.parseDouble(scanner.nextLine()));
+
+                            System.out.print("Category: ");
+                            item.setCategory(scanner.nextLine().toUpperCase());
+
+                            selected.addMenuItem(item);
+                            break;
+
+                        case "4":
+                            done = true;
+                            System.out.println("Logging out...");
+                            break;
+                    }
+                }
+            }
+
+            if (loggedInUser instanceof Customer) {
+
+                Customer c = (Customer) loggedInUser;
+                boolean done = false;
+
+                while (!done) {
+
+                    System.out.println("\n=== Customer Menu ===");
+                    System.out.println("1. Browse Restaurants");
+                    System.out.println("2. View Cart");
+                    System.out.println("3. Checkout");
+                    System.out.println("4. Logout");
+
+                    String option = scanner.nextLine();
+
+                    switch (option) {
+
+                        case "1":
+                            List<Restaurant> restaurants = restaurantService.findNearbyRestaurants(0, 0);
+
+                            int rIndex = -1;
+                            while (true) {
+                                for (int i = 0; i < restaurants.size(); i++) {
+                                    System.out.println(i + 1 + ": " + restaurants.get(i).getName());
+                                }
+                                try {
+                                    rIndex = Integer.parseInt(scanner.nextLine()) - 1;
+                                    if (rIndex >= 0 && rIndex < restaurants.size()) break;
+                                } catch (Exception e) {}
+                                System.out.println("Invalid selection.");
+                            }
+
+                            Restaurant chosen = restaurants.get(rIndex);
+
+                            System.out.print("Filter category (or press enter to skip): ");
+                            String filter = scanner.nextLine().toUpperCase();
+
+                            List<MenuItem> items;
+                            if (filter.isEmpty()) {
+                                items = chosen.getMenu().getItems();
+                            } else {
+                                items = chosen.getMenu().getItemsByCategory(filter);
+                            }
+
+                            if (items.isEmpty()) {
+                                System.out.println("No items found.");
+                                break;
+                            }
+
+                            int itemIndex = -1;
+                            while (true) {
+                                for (int i = 0; i < items.size(); i++) {
+                                    MenuItem mi = items.get(i);
+                                    System.out.println(i + 1 + ": " + mi.getName() + " - $" + mi.getPrice());
+                                }
+                                System.out.print("Select item #: ");
+                                try {
+                                    itemIndex = Integer.parseInt(scanner.nextLine()) - 1;
+                                    if (itemIndex >= 0 && itemIndex < items.size()) break;
+                                } catch (Exception e) {}
+                                System.out.println("Invalid selection.");
+                            }
+
+                            System.out.print("Quantity: ");
+                            int qty = Integer.parseInt(scanner.nextLine());
+
+                            c.addToCart(items.get(itemIndex), qty);
+                            break;
+
+                        case "2":
+                            Order cart = c.getCurrentOrder();
+
+                            for (Map.Entry<MenuItem, Integer> entry : cart.getItems().entrySet()) {
+                                System.out.println(entry.getKey().getName() + " x" + entry.getValue());
+                            }
+                            break;
+
+                        case "3":
+                            Order order = c.getCurrentOrder();
+                            order.setOrderId("o" + System.currentTimeMillis());
+                            order.setCustomerId(c.getId());
+                            order.setStatus("PLACED");
+
+                            c.placeOrder(order);
+                            break;
+
+                        case "4":
+                            done = true;
+                            System.out.println("Logging out...");
+                            break;
+                    }
                 }
             }
         }
-
-        scanner.close();
     }
 }

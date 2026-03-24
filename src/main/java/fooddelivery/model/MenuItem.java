@@ -6,6 +6,7 @@ public class MenuItem {
     private String name;
     private String description;
     private double price;
+    private String category;
 
     public MenuItem() {}
 
@@ -20,4 +21,20 @@ public class MenuItem {
 
     public double getPrice() { return price; }
     public void setPrice(double price) { this.price = price; }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MenuItem)) return false;
+        MenuItem item = (MenuItem) o;
+        return id != null && id.equals(item.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }

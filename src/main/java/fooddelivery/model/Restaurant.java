@@ -28,6 +28,12 @@ public class Restaurant {
     public List<String> getActiveOrders() { return activeOrders; }
     public void setActiveOrders(List<String> activeOrders) { this.activeOrders = activeOrders; }
 
-    public void addMenuItem(MenuItem item) {}
-    public void removeMenuItem(String itemId) {}
+    public void addMenuItem(MenuItem item) {
+        menu.addItem(item);
+        System.out.println("Added item: " + item.getName());
+    }
+
+    public void removeMenuItem(String itemId) {
+        menu.removeItem(itemId);
+    }
 }

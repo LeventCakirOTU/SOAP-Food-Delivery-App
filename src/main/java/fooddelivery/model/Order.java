@@ -1,14 +1,14 @@
 package fooddelivery.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Order {
 
     private String orderId;
     private String customerId;
     private String restaurantId;
-    private List<MenuItem> items = new ArrayList<>();
+    private Map<MenuItem, Integer> items = new HashMap<>();
     private double totalCost;
     private String status;
 
@@ -23,8 +23,8 @@ public class Order {
     public String getRestaurantId() { return restaurantId; }
     public void setRestaurantId(String restaurantId) { this.restaurantId = restaurantId; }
 
-    public List<MenuItem> getItems() { return items; }
-    public void setItems(List<MenuItem> items) { this.items = items; }
+    public Map<MenuItem, Integer> getItems() { return items; }
+    public void setItems(Map<MenuItem, Integer> items) { this.items = items; }
 
     public double getTotalCost() { return totalCost; }
     public void setTotalCost(double totalCost) { this.totalCost = totalCost; }
@@ -32,5 +32,21 @@ public class Order {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public void calculateTotal() {}
+    // add to cart
+    public void addItem(MenuItem item, int quantity) {
+        items.put(item, items.getOrDefault(item, 0) + quantity);
+    }
+
+    // remove from cart
+    public void removeItem(MenuItem item) {
+        items.remove(item);
+    }
+
+    // total price
+    public void calculateTotal() {
+        totalCost = 0;
+        for (Map.Entry<MenuItem, Integer> entry : items.entrySet()) {
+            totalCost += entry.getKey().getPrice() * entry.getValue();
+        }
+    }
 }
