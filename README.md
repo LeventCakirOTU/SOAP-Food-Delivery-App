@@ -8,8 +8,9 @@ Iteration 1: COMPLETE
 Iteration 2: In Progress  
 Iteration 3: Not Under Development  
 
-# Present Burndown Chart (March 18, 2026)
-<img width="842" height="451" alt="Screenshot 2026-03-18 081440" src="https://github.com/user-attachments/assets/79be5885-45cb-4473-a0eb-cc473b65ed5d" />
+# Present Burndown Chart (March 24, 2026)
+<img width="786" height="422" alt="Screenshot 2026-03-24 232821" src="https://github.com/user-attachments/assets/adb0c2d7-c84d-4c9f-8bd0-640baf10aa81" />
+
 
 # Basic Setup Instructions:
 Initial IDE Build Tool Requirements: Find pom.xml in the directory, right click and select add as a maven project. Navigate to Settings>Build,Execution,Deployment>Build Tools>Maven>Runner. From there, select an SDK and enable Delegate IDE build/run actions to Maven.  
