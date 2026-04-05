@@ -43,20 +43,39 @@ public class Order {
     // --- YOUR ADDED LOGIC ---
 
     // Add to cart
+    // Add item to cart
     public void addItem(MenuItem item, int quantity) {
+        if (item == null || quantity <= 0) return;
+
         items.put(item, items.getOrDefault(item, 0) + quantity);
+        calculateTotal();
     }
 
     // Remove from cart
     public void removeItem(MenuItem item) {
         items.remove(item);
+        calculateTotal();
+    }
+
+
+    //update quantity
+    public void updateItem(MenuItem item, int quantity) {
+        if (quantity <= 0) {
+            items.remove(item);
+        } else {
+            items.put(item, quantity);
+        }
+        calculateTotal();
     }
 
     // total price
     public void calculateTotal() {
-        this.totalPrice = 0; // Reset before calculating
+        totalPrice = 0.0;
+
         for (Map.Entry<MenuItem, Integer> entry : items.entrySet()) {
-            this.totalPrice += entry.getKey().getPrice() * entry.getValue();
+            MenuItem item = entry.getKey();
+            int qty = entry.getValue();
+            totalPrice += item.getPrice() * qty;
         }
     }
 }
