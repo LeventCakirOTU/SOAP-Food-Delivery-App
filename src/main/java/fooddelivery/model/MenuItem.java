@@ -7,6 +7,7 @@ public class MenuItem {
     private String description;
     private double price;
     private String category;
+    private boolean available = true; // NEW
 
     public MenuItem() {}
 
@@ -24,6 +25,9 @@ public class MenuItem {
 
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
+
+    public boolean isAvailable() { return available; }
+    public void setAvailable(boolean available) { this.available = available; }
 
     @Override
     public boolean equals(Object o) {

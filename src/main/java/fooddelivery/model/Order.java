@@ -11,6 +11,7 @@ public class Order {
     private Map<MenuItem, Integer> items = new HashMap<>();
     private double totalCost;
     private String status;
+    private String instructions; // NEW
 
     public Order() {}
 
@@ -32,17 +33,17 @@ public class Order {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    // add to cart
+    public String getInstructions() { return instructions; }
+    public void setInstructions(String instructions) { this.instructions = instructions; }
+
     public void addItem(MenuItem item, int quantity) {
         items.put(item, items.getOrDefault(item, 0) + quantity);
     }
 
-    // remove from cart
     public void removeItem(MenuItem item) {
         items.remove(item);
     }
 
-    // total price
     public void calculateTotal() {
         totalCost = 0;
         for (Map.Entry<MenuItem, Integer> entry : items.entrySet()) {

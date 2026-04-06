@@ -1,6 +1,7 @@
 package fooddelivery.app;
 
 import fooddelivery.model.*;
+import fooddelivery.services.DeliveryService;
 import fooddelivery.services.RestaurantService;
 import fooddelivery.services.UserService;
 
@@ -21,8 +22,10 @@ public class MainApp {
 
         RestaurantService restaurantService = new RestaurantService();
         UserService userService = new UserService();
+        DeliveryService deliveryService = new DeliveryService();
         Scanner scanner = new Scanner(System.in);
 
+        // ===== SAMPLE RESTAURANTS =====
         Restaurant r1 = new Restaurant();
         r1.setId("1");
         r1.setName("Restaurant 1");
@@ -68,12 +71,13 @@ public class MainApp {
         r2i2.setName("Burger");
         r2i2.setDescription("Beef burger");
         r2i2.setPrice(9.3);
-        r2i2.setCategory("meat");
+        r2i2.setCategory("MEAT");
         r2.addMenuItem(r2i2);
 
         restaurantService.registerRestaurant(r1);
         restaurantService.registerRestaurant(r2);
 
+        // ===== SAMPLE USERS =====
         Customer customer = new Customer();
         customer.setId("c1");
         customer.setName("Alice");
@@ -94,6 +98,16 @@ public class MainApp {
         owner.setEmail("mike@teamail.com");
         owner.setPassword("mikey77");
         userService.registerUser(owner);
+
+        // ===== SAMPLE DELIVERY TASK =====
+        DeliveryTask sampleTask = new DeliveryTask();
+        sampleTask.setTaskId("t1");
+        sampleTask.setOrderId("sampleOrder");
+        sampleTask.setPickupLocation("Restaurant 1");
+        sampleTask.setDropoffLocation("123 Main St");
+        sampleTask.setInstructions("Leave at door");
+        sampleTask.setStatus("PENDING");
+        deliveryService.addTask(sampleTask);
 
         while (true) {
 
@@ -151,6 +165,233 @@ public class MainApp {
 
             System.out.println("Welcome " + loggedInUser.getName());
 
+            // ===== CUSTOMER MENU =====
+            if (loggedInUser instanceof Customer) {
+
+                Customer c = (Customer) loggedInUser;
+                boolean done = false;
+
+                while (!done) {
+
+                    System.out.println("\n=== Customer Menu ===");
+                    System.out.println("1. Browse Restaurants");
+                    System.out.println("2. View Cart");
+                    System.out.println("3. Checkout");
+                    System.out.println("4. Logout");
+
+                    String option = scanner.nextLine();
+
+                    switch (option) {
+
+                        case "1":
+
+                            List<Restaurant> restaurants = restaurantService.findNearbyRestaurants(0, 0);
+
+                            if (restaurants.isEmpty()) {
+                                System.out.println("No restaurants found.");
+                                break;
+                            }
+
+                            // SHOW RESTAURANTS FIRST
+                            System.out.println("\nRestaurants:");
+                            for (int i = 0; i < restaurants.size(); i++) {
+                                System.out.println((i + 1) + ". " + restaurants.get(i).getName());
+                            }
+
+                            System.out.println((restaurants.size() + 1) + ". Back");
+                            System.out.print("Choose: ");
+
+                            int rChoice = Integer.parseInt(scanner.nextLine());
+
+                            if (rChoice == restaurants.size() + 1) break;
+
+                            if (rChoice < 1 || rChoice > restaurants.size()) {
+                                System.out.println("Invalid choice.");
+                                break;
+                            }
+
+                            Restaurant chosen = restaurants.get(rChoice - 1);
+
+                            List<MenuItem> items = chosen.getMenu().getItems();
+
+                            if (items.isEmpty()) {
+                                System.out.println("No items.");
+                                break;
+                            }
+
+                            System.out.println("\nMenu:");
+                            for (int i = 0; i < items.size(); i++) {
+                                MenuItem m = items.get(i);
+                                if (m.isAvailable()) {
+                                    System.out.println((i + 1) + ". " + m.getName() + " $" + m.getPrice());
+                                }
+                            }
+
+                            System.out.println((items.size() + 1) + ". Back");
+                            System.out.print("Choose item: ");
+
+                            int itemIndex = Integer.parseInt(scanner.nextLine());
+
+                            if (itemIndex == items.size() + 1) break;
+
+                            if (itemIndex < 1 || itemIndex > items.size()) {
+                                System.out.println("Invalid choice.");
+                                break;
+                            }
+
+                            System.out.print("Quantity: ");
+                            int qty = Integer.parseInt(scanner.nextLine());
+
+                            c.addToCart(items.get(itemIndex - 1), qty);
+                            break;
+
+                        case "2":
+                            Order cart = c.getCurrentOrder();
+                            for (Map.Entry<MenuItem, Integer> entry : cart.getItems().entrySet()) {
+                                System.out.println(entry.getKey().getName() + " x" + entry.getValue());
+                            }
+                            break;
+
+                        case "3":
+                            Order order = c.getCurrentOrder();
+                            order.setOrderId("o" + System.currentTimeMillis());
+                            order.setCustomerId(c.getId());
+                            order.setStatus("PLACED");
+
+                            System.out.print("Instructions: ");
+                            order.setInstructions(scanner.nextLine());
+
+                            c.placeOrder(order);
+
+                            DeliveryTask task = new DeliveryTask();
+                            task.setTaskId("t" + System.currentTimeMillis());
+                            task.setOrderId(order.getOrderId());
+                            task.setPickupLocation("Restaurant");
+                            task.setDropoffLocation("Customer");
+                            task.setInstructions(order.getInstructions());
+                            task.setStatus("PENDING");
+
+                            deliveryService.addTask(task);
+
+                            System.out.println("Order placed!");
+                            break;
+
+                        case "4":
+                            done = true;
+                            break;
+                    }
+                }
+            }
+
+            // ===== DRIVER MENU =====
+            if (loggedInUser instanceof Driver) {
+
+                Driver d = (Driver) loggedInUser;
+                boolean done = false;
+
+                while (!done) {
+                    System.out.println("\n=== Driver Menu ===");
+                    System.out.println("1. View Available Tasks");
+                    System.out.println("2. My Tasks");
+                    System.out.println("3. Logout");
+
+                    String option = scanner.nextLine();
+
+                    switch (option) {
+
+                        case "1":
+
+                            while (true) {
+                                List<DeliveryTask> allTasks = deliveryService.getAllTasks();
+
+                                List<DeliveryTask> pending = new java.util.ArrayList<>();
+                                for (DeliveryTask t : allTasks) {
+                                    if ("PENDING".equals(t.getStatus())) {
+                                        pending.add(t);
+                                    }
+                                }
+
+                                if (pending.isEmpty()) {
+                                    System.out.println("No available tasks.");
+                                    break;
+                                }
+
+                                System.out.println("\nAvailable Tasks:");
+
+                                for (int i = 0; i < pending.size(); i++) {
+                                    DeliveryTask t = pending.get(i);
+                                    System.out.println((i + 1) + ". Order " + t.getOrderId()
+                                            + " | " + t.getPickupLocation()
+                                            + " -> " + t.getDropoffLocation());
+                                }
+
+                                System.out.println((pending.size() + 1) + ". Back");
+                                System.out.print("Choose: ");
+
+                                int choice;
+                                try {
+                                    choice = Integer.parseInt(scanner.nextLine());
+                                } catch (Exception e) {
+                                    System.out.println("Invalid input.");
+                                    continue;
+                                }
+
+                                if (choice == pending.size() + 1) break;
+
+                                if (choice < 1 || choice > pending.size()) {
+                                    System.out.println("Invalid choice.");
+                                    continue;
+                                }
+
+                                DeliveryTask selected = pending.get(choice - 1);
+
+                                while (true) {
+                                    System.out.println("\n1. Accept");
+                                    System.out.println("2. Reject");
+                                    System.out.println("3. Back");
+                                    System.out.print("Choose: ");
+
+                                    String action = scanner.nextLine();
+
+                                    if (action.equals("1")) {
+                                        d.acceptTask(selected);
+                                        break;
+                                    } else if (action.equals("2")) {
+                                        d.rejectTask(selected);
+                                        break;
+                                    } else if (action.equals("3")) {
+                                        break;
+                                    } else {
+                                        System.out.println("Invalid option.");
+                                    }
+                                }
+                            }
+                            break;
+
+                        case "2":
+                            List<DeliveryTask> myTasks = d.getTasks();
+
+                            if (myTasks.isEmpty()) {
+                                System.out.println("No accepted tasks.");
+                            } else {
+                                System.out.println("\nMy Tasks:");
+                                for (int i = 0; i < myTasks.size(); i++) {
+                                    DeliveryTask t = myTasks.get(i);
+                                    System.out.println((i + 1) + ". Task " + t.getTaskId());
+                                    System.out.println("   Order: " + t.getOrderId());
+                                    System.out.println("   Instructions: " + t.getInstructions());
+                                    System.out.println("   Status: " + t.getStatus());
+                                }
+                            }
+                            break;
+
+                        case "3":
+                            done = true;
+                            break;
+                    }
+                }
+            }
+// ===== OWNER MENU =====
             if (loggedInUser instanceof RestaurantOwner) {
 
                 RestaurantOwner restaurantOwner = (RestaurantOwner) loggedInUser;
@@ -161,7 +402,8 @@ public class MainApp {
                     System.out.println("1. Add Restaurant");
                     System.out.println("2. View My Restaurants");
                     System.out.println("3. Add Menu Item");
-                    System.out.println("4. Logout");
+                    System.out.println("4. Toggle Item Availability");
+                    System.out.println("5. Logout");
 
                     String option = scanner.nextLine();
 
@@ -185,33 +427,61 @@ public class MainApp {
                             break;
 
                         case "2":
-                            for (Restaurant res : restaurantOwner.getRestaurants()) {
-                                System.out.println(res.getName());
+                            List<Restaurant> myRestaurants = restaurantOwner.getRestaurants();
+                            if (myRestaurants.isEmpty()) {
+                                System.out.println("No restaurants found.");
+                                break;
+                            }
+
+                            System.out.println("\nMy Restaurants:");
+                            for (int i = 0; i < myRestaurants.size(); i++) {
+                                System.out.println((i + 1) + ". " + myRestaurants.get(i).getName());
+                            }
+                            System.out.println((myRestaurants.size() + 1) + ". Back");
+                            System.out.print("Choose: ");
+                            int rChoice;
+                            try {
+                                rChoice = Integer.parseInt(scanner.nextLine());
+                            } catch (Exception e) {
+                                System.out.println("Invalid input.");
+                                break;
+                            }
+                            if (rChoice == myRestaurants.size() + 1) break;
+                            if (rChoice < 1 || rChoice > myRestaurants.size()) {
+                                System.out.println("Invalid choice.");
                             }
                             break;
 
                         case "3":
                             List<Restaurant> resList = restaurantOwner.getRestaurants();
                             if (resList.isEmpty()) {
-                                System.out.println("No restaurants.");
+                                System.out.println("No restaurants available.");
                                 break;
                             }
 
-                            int index = -1;
-                            while (true) {
-                                System.out.println("Select a restaurant:");
-                                for (int i = 0; i < resList.size(); i++) {
-                                    System.out.println(i + 1 + ": " + resList.get(i).getName());
-                                }
-                                System.out.print("Enter number: ");
-                                try {
-                                    index = Integer.parseInt(scanner.nextLine()) - 1;
-                                    if (index >= 0 && index < resList.size()) break;
-                                } catch (Exception e) {}
-                                System.out.println("Invalid selection.");
+                            // Let owner choose which restaurant to add item to
+                            System.out.println("\nSelect a restaurant to add menu item:");
+                            for (int i = 0; i < resList.size(); i++) {
+                                System.out.println((i + 1) + ". " + resList.get(i).getName());
+                            }
+                            System.out.println((resList.size() + 1) + ". Back");
+                            System.out.print("Choose: ");
+
+                            int selIndex;
+                            try {
+                                selIndex = Integer.parseInt(scanner.nextLine());
+                            } catch (Exception e) {
+                                System.out.println("Invalid input.");
+                                break;
                             }
 
-                            Restaurant selected = resList.get(index);
+                            if (selIndex == resList.size() + 1) break;
+                            if (selIndex < 1 || selIndex > resList.size()) {
+                                System.out.println("Invalid choice.");
+                                break;
+                            }
+
+                            Restaurant selected = resList.get(selIndex - 1);
 
                             MenuItem item = new MenuItem();
                             item.setId("m" + System.currentTimeMillis());
@@ -229,106 +499,74 @@ public class MainApp {
                             item.setCategory(scanner.nextLine().toUpperCase());
 
                             selected.addMenuItem(item);
+                            System.out.println("Menu item added to " + selected.getName());
                             break;
 
                         case "4":
-                            done = true;
-                            System.out.println("Logging out...");
-                            break;
-                    }
-                }
-            }
+                            List<Restaurant> list = restaurantOwner.getRestaurants();
+                            if (list.isEmpty()) break;
 
-            if (loggedInUser instanceof Customer) {
-
-                Customer c = (Customer) loggedInUser;
-                boolean done = false;
-
-                while (!done) {
-
-                    System.out.println("\n=== Customer Menu ===");
-                    System.out.println("1. Browse Restaurants");
-                    System.out.println("2. View Cart");
-                    System.out.println("3. Checkout");
-                    System.out.println("4. Logout");
-
-                    String option = scanner.nextLine();
-
-                    switch (option) {
-
-                        case "1":
-                            List<Restaurant> restaurants = restaurantService.findNearbyRestaurants(0, 0);
-
-                            int rIndex = -1;
-                            while (true) {
-                                for (int i = 0; i < restaurants.size(); i++) {
-                                    System.out.println(i + 1 + ": " + restaurants.get(i).getName());
-                                }
-                                try {
-                                    rIndex = Integer.parseInt(scanner.nextLine()) - 1;
-                                    if (rIndex >= 0 && rIndex < restaurants.size()) break;
-                                } catch (Exception e) {}
-                                System.out.println("Invalid selection.");
+                            System.out.println("\nSelect restaurant to toggle items:");
+                            for (int i = 0; i < list.size(); i++) {
+                                System.out.println((i + 1) + ". " + list.get(i).getName());
                             }
+                            System.out.println((list.size() + 1) + ". Back");
+                            System.out.print("Choose: ");
 
-                            Restaurant chosen = restaurants.get(rIndex);
-
-                            System.out.print("Filter category (or press enter to skip): ");
-                            String filter = scanner.nextLine().toUpperCase();
-
-                            List<MenuItem> items;
-                            if (filter.isEmpty()) {
-                                items = chosen.getMenu().getItems();
-                            } else {
-                                items = chosen.getMenu().getItemsByCategory(filter);
+                            int restIndex;
+                            try {
+                                restIndex = Integer.parseInt(scanner.nextLine());
+                            } catch (Exception e) {
+                                System.out.println("Invalid input.");
+                                break;
                             }
-
-                            if (items.isEmpty()) {
-                                System.out.println("No items found.");
+                            if (restIndex == list.size() + 1) break;
+                            if (restIndex < 1 || restIndex > list.size()) {
+                                System.out.println("Invalid choice.");
                                 break;
                             }
 
-                            int itemIndex = -1;
-                            while (true) {
-                                for (int i = 0; i < items.size(); i++) {
-                                    MenuItem mi = items.get(i);
-                                    System.out.println(i + 1 + ": " + mi.getName() + " - $" + mi.getPrice());
-                                }
-                                System.out.print("Select item #: ");
-                                try {
-                                    itemIndex = Integer.parseInt(scanner.nextLine()) - 1;
-                                    if (itemIndex >= 0 && itemIndex < items.size()) break;
-                                } catch (Exception e) {}
-                                System.out.println("Invalid selection.");
+                            Restaurant res = list.get(restIndex - 1);
+                            List<MenuItem> items = res.getMenu().getItems();
+
+                            if (items.isEmpty()) {
+                                System.out.println("No menu items.");
+                                break;
                             }
 
-                            System.out.print("Quantity: ");
-                            int qty = Integer.parseInt(scanner.nextLine());
-
-                            c.addToCart(items.get(itemIndex), qty);
-                            break;
-
-                        case "2":
-                            Order cart = c.getCurrentOrder();
-
-                            for (Map.Entry<MenuItem, Integer> entry : cart.getItems().entrySet()) {
-                                System.out.println(entry.getKey().getName() + " x" + entry.getValue());
+                            System.out.println("\nMenu Items:");
+                            for (int i = 0; i < items.size(); i++) {
+                                MenuItem mi = items.get(i);
+                                System.out.println((i + 1) + ". " + mi.getName() + " (" + (mi.isAvailable() ? "Available" : "Unavailable") + ")");
                             }
+                            System.out.println((items.size() + 1) + ". Back");
+                            System.out.print("Choose item: ");
+
+                            int itemChoice;
+                            try {
+                                itemChoice = Integer.parseInt(scanner.nextLine());
+                            } catch (Exception e) {
+                                System.out.println("Invalid input.");
+                                break;
+                            }
+
+                            if (itemChoice == items.size() + 1) break;
+                            if (itemChoice < 1 || itemChoice > items.size()) {
+                                System.out.println("Invalid choice.");
+                                break;
+                            }
+
+                            MenuItem mi = items.get(itemChoice - 1);
+                            mi.setAvailable(!mi.isAvailable());
+                            System.out.println(mi.getName() + " availability toggled to " + (mi.isAvailable() ? "Available" : "Unavailable"));
                             break;
 
-                        case "3":
-                            Order order = c.getCurrentOrder();
-                            order.setOrderId("o" + System.currentTimeMillis());
-                            order.setCustomerId(c.getId());
-                            order.setStatus("PLACED");
-
-                            c.placeOrder(order);
-                            break;
-
-                        case "4":
+                        case "5":
                             done = true;
-                            System.out.println("Logging out...");
                             break;
+
+                        default:
+                            System.out.println("Invalid option.");
                     }
                 }
             }

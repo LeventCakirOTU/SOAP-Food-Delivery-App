@@ -7,7 +7,8 @@ public class DeliveryTask {
     private String driverId;
     private String pickupLocation;
     private String dropoffLocation;
-    private String status; // pending, accepted, in-transit, completed
+    private String status;
+    private String instructions; // NEW
 
     public DeliveryTask() {}
 
@@ -28,5 +29,7 @@ public class DeliveryTask {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
-    public void updateStatus(String newStatus) {}
+
+    public String getInstructions() { return instructions; }
+    public void setInstructions(String instructions) { this.instructions = instructions; }
 }
