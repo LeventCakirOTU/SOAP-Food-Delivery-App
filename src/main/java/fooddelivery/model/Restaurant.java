@@ -10,6 +10,9 @@ public class Restaurant {
     private Menu menu = new Menu();
     private Location location;
     private List<String> activeOrders = new ArrayList<>();
+    private List<Integer> ratings = new ArrayList<>();
+    private String openTime;
+    private String closeTime;
 
     public Restaurant() {}
 
@@ -27,6 +30,27 @@ public class Restaurant {
 
     public List<String> getActiveOrders() { return activeOrders; }
     public void setActiveOrders(List<String> activeOrders) { this.activeOrders = activeOrders; }
+
+    public void addRating(int rating) {
+        if (rating >= 1 && rating <= 5) {
+            ratings.add(rating);
+        }
+    }
+
+    public double getAverageRating() {
+        if (ratings.isEmpty()) return 0.0;
+
+        int sum = 0;
+        for (int r : ratings) sum += r;
+
+        return (double) sum / ratings.size();
+    }
+
+    public String getOpenTime() { return openTime; }
+    public void setOpenTime(String openTime) { this.openTime = openTime; }
+
+    public String getCloseTime() { return closeTime; }
+    public void setCloseTime(String closeTime) { this.closeTime = closeTime; }
 
     public void addMenuItem(MenuItem item) {
         menu.addItem(item);

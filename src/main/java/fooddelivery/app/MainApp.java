@@ -29,18 +29,26 @@ public class MainApp {
         Restaurant r1 = new Restaurant();
         r1.setId("1");
         r1.setName("Restaurant 1");
+
         Location loc1 = new Location();
-        loc1.setLatitude(43.65);
-        loc1.setLongitude(-79.38);
+        loc1.setLatitude(20);
+        loc1.setLongitude(-100);
         r1.setLocation(loc1);
+
+        r1.setOpenTime("07:00");
+        r1.setCloseTime("21:00");
 
         Restaurant r2 = new Restaurant();
         r2.setId("2");
         r2.setName("Restaurant 2");
+
         Location loc2 = new Location();
-        loc2.setLatitude(43.66);
-        loc2.setLongitude(-79.39);
+        loc2.setLatitude(40);
+        loc2.setLongitude(-110);
         r2.setLocation(loc2);
+
+        r2.setOpenTime("09:00");
+        r2.setCloseTime("22:00");
 
         MenuItem r1i1 = new MenuItem();
         r1i1.setId("m1");
@@ -83,6 +91,12 @@ public class MainApp {
         customer.setName("Alice");
         customer.setEmail("alice@email.com");
         customer.setPassword("password!");
+
+        Location cLoc = new Location();
+        cLoc.setLatitude(10.2);
+        cLoc.setLongitude(-10.4);
+        customer.setLocation(cLoc);
+
         userService.registerUser(customer);
 
         Driver driver = new Driver();
@@ -143,6 +157,17 @@ public class MainApp {
                         newUser.setName(name);
                         newUser.setEmail(email);
                         newUser.setPassword(password);
+
+                        // ✅ ADD LOCATION FOR CUSTOMER
+                        if (newUser instanceof Customer) {
+                            Location userLoc = new Location();
+                            System.out.print("Your latitude: ");
+                            userLoc.setLatitude(Double.parseDouble(scanner.nextLine()));
+                            System.out.print("Your longitude: ");
+                            userLoc.setLongitude(Double.parseDouble(scanner.nextLine()));
+                            ((Customer) newUser).setLocation(userLoc);
+                        }
+
                         userService.registerUser(newUser);
                     }
 
@@ -185,38 +210,45 @@ public class MainApp {
 
                         case "1":
 
-                            List<Restaurant> restaurants = restaurantService.findNearbyRestaurants(0, 0);
+                            List<Restaurant> restaurants =
+                                    restaurantService.findNearbyRestaurants(
+                                            c.getLocation().getLatitude(),
+                                            c.getLocation().getLongitude()
+                                    );
 
-                            if (restaurants.isEmpty()) {
-                                System.out.println("No restaurants found.");
-                                break;
-                            }
-
-                            // SHOW RESTAURANTS FIRST
                             System.out.println("\nRestaurants:");
                             for (int i = 0; i < restaurants.size(); i++) {
-                                System.out.println((i + 1) + ". " + restaurants.get(i).getName());
+
+                                Restaurant r = restaurants.get(i);
+
+                                double distance = Math.sqrt(
+                                        Math.pow(c.getLocation().getLatitude() - r.getLocation().getLatitude(), 2) +
+                                                Math.pow(c.getLocation().getLongitude() - r.getLocation().getLongitude(), 2)
+                                );
+
+                                System.out.println((i + 1) + ". " + r.getName()
+                                        + " | Rating: " + String.format("%.1f", r.getAverageRating())
+                                        + " | Distance: " + String.format("%.2f", distance)
+                                        + " | Hours: " + r.getOpenTime() + "-" + r.getCloseTime());
                             }
 
                             System.out.println((restaurants.size() + 1) + ". Back");
                             System.out.print("Choose: ");
 
                             int rChoice = Integer.parseInt(scanner.nextLine());
-
                             if (rChoice == restaurants.size() + 1) break;
-
-                            if (rChoice < 1 || rChoice > restaurants.size()) {
-                                System.out.println("Invalid choice.");
-                                break;
-                            }
 
                             Restaurant chosen = restaurants.get(rChoice - 1);
 
-                            List<MenuItem> items = chosen.getMenu().getItems();
+                            // ✅ FILTER
+                            System.out.print("Filter by category (or press Enter): ");
+                            String filter = scanner.nextLine();
 
-                            if (items.isEmpty()) {
-                                System.out.println("No items.");
-                                break;
+                            List<MenuItem> items;
+                            if (!filter.isEmpty()) {
+                                items = chosen.getMenu().getItemsByCategory(filter);
+                            } else {
+                                items = chosen.getMenu().getItems();
                             }
 
                             System.out.println("\nMenu:");
@@ -228,21 +260,20 @@ public class MainApp {
                             }
 
                             System.out.println((items.size() + 1) + ". Back");
-                            System.out.print("Choose item: ");
-
                             int itemIndex = Integer.parseInt(scanner.nextLine());
 
                             if (itemIndex == items.size() + 1) break;
-
-                            if (itemIndex < 1 || itemIndex > items.size()) {
-                                System.out.println("Invalid choice.");
-                                break;
-                            }
 
                             System.out.print("Quantity: ");
                             int qty = Integer.parseInt(scanner.nextLine());
 
                             c.addToCart(items.get(itemIndex - 1), qty);
+
+                            // ⭐ RATE
+                            System.out.print("Rate restaurant (1-5): ");
+                            int rating = Integer.parseInt(scanner.nextLine());
+                            chosen.addRating(rating);
+
                             break;
 
                         case "2":
@@ -423,6 +454,11 @@ public class MainApp {
                             loc.setLongitude(Double.parseDouble(scanner.nextLine()));
 
                             r.setLocation(loc);
+                            System.out.print("Open time (e.g. 07:00): ");
+                            r.setOpenTime(scanner.nextLine());
+
+                            System.out.print("Close time (e.g. 21:00): ");
+                            r.setCloseTime(scanner.nextLine());
                             restaurantOwner.addRestaurant(r, restaurantService);
                             break;
 

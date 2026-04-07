@@ -1,5 +1,6 @@
 package fooddelivery.users;
 
+import fooddelivery.model.Location;
 import fooddelivery.model.MenuItem;
 import fooddelivery.model.Order;
 
@@ -9,6 +10,8 @@ import java.util.List;
 public class Customer extends User {
 
     private String address;
+    private Location location;
+
     private List<Order> orderHistory = new ArrayList<>();
     private Order currentOrder = new Order();
 
@@ -16,6 +19,9 @@ public class Customer extends User {
 
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+
+    public Location getLocation() { return location; }
+    public void setLocation(Location location) { this.location = location; }
 
     public List<Order> getOrderHistory() { return orderHistory; }
     public void setOrderHistory(List<Order> orderHistory) { this.orderHistory = orderHistory; }
