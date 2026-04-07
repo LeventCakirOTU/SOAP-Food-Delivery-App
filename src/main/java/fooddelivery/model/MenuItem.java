@@ -8,8 +8,12 @@ public class MenuItem {
     private double price;
     private String category;
     private boolean available = true; // NEW
+    private int preparationTime;
 
     public MenuItem() {}
+
+    public int getPreparationTime() { return preparationTime; }
+    public void setPreparationTime(int preparationTime) { this.preparationTime = preparationTime; }
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }

@@ -56,6 +56,7 @@ public class MainApp {
         r1i1.setDescription("Grilled chicken");
         r1i1.setPrice(10.0);
         r1i1.setCategory("MEAT");
+        r1i1.setPreparationTime(15);
         r1.addMenuItem(r1i1);
 
         MenuItem r1i2 = new MenuItem();
@@ -64,6 +65,7 @@ public class MainApp {
         r1i2.setDescription("Crispy fries");
         r1i2.setPrice(4);
         r1i2.setCategory("SIDE");
+        r1i2.setPreparationTime(5);
         r1.addMenuItem(r1i2);
 
         MenuItem r2i1 = new MenuItem();
@@ -72,6 +74,7 @@ public class MainApp {
         r2i1.setDescription("Fresh salad");
         r2i1.setPrice(6.01);
         r2i1.setCategory("VEGETARIAN");
+        r2i1.setPreparationTime(7);
         r2.addMenuItem(r2i1);
 
         MenuItem r2i2 = new MenuItem();
@@ -80,6 +83,7 @@ public class MainApp {
         r2i2.setDescription("Beef burger");
         r2i2.setPrice(9.3);
         r2i2.setCategory("MEAT");
+        r2i2.setPreparationTime(12);
         r2.addMenuItem(r2i2);
 
         restaurantService.registerRestaurant(r1);
@@ -255,7 +259,7 @@ public class MainApp {
                             for (int i = 0; i < items.size(); i++) {
                                 MenuItem m = items.get(i);
                                 if (m.isAvailable()) {
-                                    System.out.println((i + 1) + ". " + m.getName() + " $" + m.getPrice());
+                                    System.out.println((i + 1) + ". " + m.getName() + " $" + m.getPrice() + " (" + m.getPreparationTime() + " minute prep time)");
                                 }
                             }
 
@@ -533,6 +537,9 @@ public class MainApp {
 
                             System.out.print("Category: ");
                             item.setCategory(scanner.nextLine().toUpperCase());
+
+                            System.out.print("Preparation time (minutes): ");
+                            item.setPreparationTime(Integer.parseInt(scanner.nextLine()));
 
                             selected.addMenuItem(item);
                             System.out.println("Menu item added to " + selected.getName());
