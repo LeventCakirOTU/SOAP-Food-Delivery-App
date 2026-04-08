@@ -1,26 +1,25 @@
-package fooddelivery.services;
+package fooddelivery.service;
 
 import fooddelivery.model.Location;
 import fooddelivery.model.Restaurant;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class RestaurantService {
 
-    private List<Restaurant> restaurants;
-
-    public RestaurantService() {
-        restaurants = new ArrayList<>();
-    }
+    private final List<Restaurant> restaurants = new ArrayList<>();
 
     public void registerRestaurant(Restaurant r) {
         restaurants.add(r);
         System.out.println("Registered: " + r.getName());
     }
 
+    public List<Restaurant> getAll() {
+        return new ArrayList<>(restaurants);
+    }
+
     private double calculateDistance(Location a, Location b) {
-        double dx = a.getLatitude() - b.getLatitude();
+        double dx = a.getLatitude()  - b.getLatitude();
         double dy = a.getLongitude() - b.getLongitude();
         return Math.sqrt(dx * dx + dy * dy);
     }
