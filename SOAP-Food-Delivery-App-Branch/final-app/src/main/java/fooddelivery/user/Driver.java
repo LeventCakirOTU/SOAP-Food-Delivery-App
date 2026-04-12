@@ -21,7 +21,5 @@ public class Driver extends User {
     public List<DeliveryTask> getTasks()                    { return tasks; }
     public void               setTasks(List<DeliveryTask> tasks){ this.tasks = tasks; }
 
-    public void acceptTask(DeliveryTask task)       {}
-    public void updateLocation()                    {}
-    public void markTaskCompleted(String taskId)    {}
+
 }

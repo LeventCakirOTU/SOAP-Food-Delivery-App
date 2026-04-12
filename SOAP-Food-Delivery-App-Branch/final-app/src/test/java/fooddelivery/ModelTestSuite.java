@@ -7,10 +7,10 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    DeliveryTaskTest.class,
-    OrderTest.class,
+        DeliveryTaskTest.class,
+        OrderTest.class,
 })
 // run from this file to perform unit tests
 public class ModelTestSuite {
-  // leave class body empty
+    // leave class body empty
 }

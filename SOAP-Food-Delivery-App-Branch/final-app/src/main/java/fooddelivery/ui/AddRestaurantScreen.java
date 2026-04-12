@@ -7,10 +7,6 @@ import fooddelivery.model.MenuItem;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Screen for a manager to create a restaurant and add menu items.
- * TODO: complete RestaurantService.createRestaurant() and manager.addMenuItem().
- */
 public class AddRestaurantScreen extends JPanel {
 
     private final JTextField restNameField;
@@ -23,10 +19,11 @@ public class AddRestaurantScreen extends JPanel {
     private final JTextField itemDescField;
     private final JTextField itemPriceField;
     private final JTextField itemCategoryField;
+    private final JTextField itemPrepTimeField;
 
     private final JPanel menuPreviewPanel;
 
-    // Tracks the restaurant created this session so menu items can be added to it
+    // tracks the restaurant created so menu items can be added
     private Restaurant currentRestaurant = null;
 
     public AddRestaurantScreen(MainFrame frame, RestaurantService restaurantService, UserService userService) {
@@ -34,12 +31,12 @@ public class AddRestaurantScreen extends JPanel {
         setBackground(AppColors.BG_DARK);
         add(buildTopBar(frame), BorderLayout.NORTH);
 
-        // ---- Split layout: left = restaurant form, right = menu builder ----
+        // split layout: left = restaurant form, right = menu builder
         JPanel content = new JPanel(new GridLayout(1, 2, 20, 0));
         content.setBackground(AppColors.BG_DARK);
         content.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
-        // --- Left: Restaurant Info ---
+        //  left restaurant info
         JPanel leftCard = UIHelper.cardPanel();
         leftCard.setLayout(new BoxLayout(leftCard, BoxLayout.Y_AXIS));
 
@@ -70,7 +67,7 @@ public class AddRestaurantScreen extends JPanel {
         leftCard.add(Box.createVerticalStrut(16));
         leftCard.add(createBtn);
 
-        // --- Right: Menu Item Builder ---
+        // right menu item builder
         JPanel rightCard = UIHelper.cardPanel();
         rightCard.setLayout(new BoxLayout(rightCard, BoxLayout.Y_AXIS));
 
@@ -81,8 +78,9 @@ public class AddRestaurantScreen extends JPanel {
         itemDescField     = UIHelper.styledField("Description");
         itemPriceField    = UIHelper.styledField("Price (e.g. 9.99)");
         itemCategoryField = UIHelper.styledField("Category (e.g. Main, Dessert)");
+        itemPrepTimeField = UIHelper.styledField("Prep time (minutes, e.g. 10)");
 
-        for (JComponent f : new JComponent[]{itemNameField, itemDescField, itemPriceField, itemCategoryField}) {
+        for (JComponent f : new JComponent[]{itemNameField, itemDescField, itemPriceField, itemCategoryField, itemPrepTimeField}) {
             f.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
             f.setAlignmentX(Component.LEFT_ALIGNMENT);
         }
@@ -110,6 +108,7 @@ public class AddRestaurantScreen extends JPanel {
         addField(rightCard, "Description", itemDescField);
         addField(rightCard, "Price", itemPriceField);
         addField(rightCard, "Category", itemCategoryField);
+        addField(rightCard, "Prep Time (min)", itemPrepTimeField);
         rightCard.add(Box.createVerticalStrut(8));
         rightCard.add(addItemBtn);
         rightCard.add(Box.createVerticalStrut(12));
@@ -129,7 +128,7 @@ public class AddRestaurantScreen extends JPanel {
         String hours    = hoursField.getText().trim();
 
         if (name.isEmpty() || address.isEmpty() || category.isEmpty() || hours.isEmpty()) {
-            UIHelper.showError(this, "All restaurant fields are required.");
+            UIHelper.showError(this, "All restaurant fields are needed.");
             return;
         }
 
@@ -152,6 +151,7 @@ public class AddRestaurantScreen extends JPanel {
         String desc     = itemDescField.getText().trim();
         String priceStr = itemPriceField.getText().trim();
         String category = itemCategoryField.getText().trim();
+        String prepStr  = itemPrepTimeField.getText().trim();
 
         if (name.isEmpty() || priceStr.isEmpty() || category.isEmpty()) {
             UIHelper.showError(this, "Name, price, and category are required.");
@@ -159,7 +159,15 @@ public class AddRestaurantScreen extends JPanel {
         }
 
         try {
-            double price = Double.parseDouble(priceStr);
+            double price   = Double.parseDouble(priceStr);
+            int    prepTime = 0;
+            if (!prepStr.isEmpty()) {
+                try { prepTime = Integer.parseInt(prepStr); }
+                catch (NumberFormatException ex) {
+                    UIHelper.showError(this, "Prep time must be a whole number (e.g. 10).");
+                    return;
+                }
+            }
 
             if (currentRestaurant == null) {
                 UIHelper.showError(this, "Please create a restaurant first before adding menu items.");
@@ -173,10 +181,13 @@ public class AddRestaurantScreen extends JPanel {
             item.setDescription(desc);
             item.setPrice(price);
             item.setCategory(category);
+            item.setPreparationTime(prepTime);
             currentRestaurant.addMenuItem(item);
 
             // Update preview panel
-            JLabel preview = UIHelper.label("• [" + category + "] " + name + " — $" + String.format("%.2f", price),
+            String prepLabel = prepTime > 0 ? " ⏱ " + prepTime + " min" : "";
+            JLabel preview = UIHelper.label(
+                    "• [" + category + "] " + name + " — $" + String.format("%.2f", price) + prepLabel,
                     AppColors.FONT_SMALL, AppColors.TEXT_PRIMARY);
             menuPreviewPanel.add(preview);
             menuPreviewPanel.revalidate();
@@ -191,6 +202,8 @@ public class AddRestaurantScreen extends JPanel {
             itemPriceField.setForeground(AppColors.TEXT_MUTED);
             itemCategoryField.setText("Category (e.g. Main, Dessert)");
             itemCategoryField.setForeground(AppColors.TEXT_MUTED);
+            itemPrepTimeField.setText("Prep time (minutes, e.g. 10)");
+            itemPrepTimeField.setForeground(AppColors.TEXT_MUTED);
 
         } catch (NumberFormatException ex) {
             UIHelper.showError(this, "Price must be a number (e.g. 9.99).");

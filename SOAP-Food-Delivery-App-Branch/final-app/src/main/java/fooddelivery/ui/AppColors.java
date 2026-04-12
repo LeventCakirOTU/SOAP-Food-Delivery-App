@@ -3,8 +3,6 @@ package fooddelivery.ui;
 import java.awt.Color;
 import java.awt.Font;
 
-// colors
-
 public class AppColors {
     public static final Color BG_DARK       = new Color(18, 18, 18);
     public static final Color BG_PANEL      = new Color(30, 30, 30);

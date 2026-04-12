@@ -10,7 +10,7 @@ import java.awt.event.*;
  */
 public class UIHelper {
 
-    /** Styled primary button (orange) */
+    // primary buttons
     public static JButton primaryButton(String text) {
         JButton btn = new JButton(text);
         btn.setFont(AppColors.FONT_BUTTON);
@@ -28,7 +28,7 @@ public class UIHelper {
         return btn;
     }
 
-    /** Styled secondary button (outline style) */
+    // secondary buttons
     public static JButton secondaryButton(String text) {
         JButton btn = new JButton(text);
         btn.setFont(AppColors.FONT_BUTTON);
@@ -41,7 +41,7 @@ public class UIHelper {
         return btn;
     }
 
-    /** Styled text field */
+    // text field
     public static JTextField styledField(String placeholder) {
         JTextField field = new JTextField();
         field.setFont(AppColors.FONT_BODY);
@@ -49,11 +49,10 @@ public class UIHelper {
         field.setForeground(AppColors.TEXT_PRIMARY);
         field.setCaretColor(AppColors.TEXT_PRIMARY);
         field.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(AppColors.BORDER, 1),
-            BorderFactory.createEmptyBorder(6, 10, 6, 10)
+                BorderFactory.createLineBorder(AppColors.BORDER, 1),
+                BorderFactory.createEmptyBorder(6, 10, 6, 10)
         ));
         field.setPreferredSize(new Dimension(260, 40));
-        // Placeholder behaviour
         field.setText(placeholder);
         field.setForeground(AppColors.TEXT_MUTED);
         field.addFocusListener(new FocusAdapter() {
@@ -80,8 +79,8 @@ public class UIHelper {
         field.setForeground(AppColors.TEXT_PRIMARY);
         field.setCaretColor(AppColors.TEXT_PRIMARY);
         field.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(AppColors.BORDER, 1),
-            BorderFactory.createEmptyBorder(6, 10, 6, 10)
+                BorderFactory.createLineBorder(AppColors.BORDER, 1),
+                BorderFactory.createEmptyBorder(6, 10, 6, 10)
         ));
         field.setPreferredSize(new Dimension(260, 40));
         field.setEchoChar((char) 0);
@@ -127,8 +126,8 @@ public class UIHelper {
         JPanel panel = new JPanel();
         panel.setBackground(AppColors.BG_CARD);
         panel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(AppColors.BORDER, 1),
-            BorderFactory.createEmptyBorder(12, 12, 12, 12)
+                BorderFactory.createLineBorder(AppColors.BORDER, 1),
+                BorderFactory.createEmptyBorder(12, 12, 12, 12)
         ));
         return panel;
     }

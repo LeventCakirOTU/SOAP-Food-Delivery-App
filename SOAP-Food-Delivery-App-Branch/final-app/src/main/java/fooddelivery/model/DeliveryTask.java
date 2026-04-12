@@ -11,7 +11,7 @@ public class DeliveryTask {
 
     public DeliveryTask() {}
 
-    // getId/setId kept for existing service code
+    // getId/setId
     public String getId()              { return id; }
     public void   setId(String id)     { this.id = id; }
 

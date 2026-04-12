@@ -2,14 +2,13 @@ package fooddelivery.ui;
 
 import fooddelivery.model.Restaurant;
 import fooddelivery.service.RestaurantService;
+import fooddelivery.user.Customer;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
 
 //Shows list of all open restaurants.
-//TODO: populate from RestaurantService.getAllOpen() and make cards clickable.
-
 public class RestaurantListScreen extends JPanel {
 
     private final JPanel listPanel;
@@ -39,11 +38,22 @@ public class RestaurantListScreen extends JPanel {
         refreshList();
     }
 
-    //clled when list change
+    //called when list changes
     public void refreshList() {
         listPanel.removeAll();
 
-        List<Restaurant> restaurants = restaurantService.getAll();
+        List<Restaurant> restaurants;
+        double customerLat = 0, customerLng = 0;
+        boolean hasCoords = false;
+
+        if (frame.getCurrentUser() instanceof Customer customer && customer.hasCoordinates()) {
+            customerLat = customer.getLatitude();
+            customerLng = customer.getLongitude();
+            hasCoords = true;
+            restaurants = restaurantService.findNearbyRestaurants(customerLat, customerLng);
+        } else {
+            restaurants = restaurantService.getAll();
+        }
 
         if (restaurants.isEmpty()) {
             JLabel empty = UIHelper.label("No restaurants available yet.", AppColors.FONT_BODY, AppColors.TEXT_MUTED);
@@ -51,7 +61,9 @@ public class RestaurantListScreen extends JPanel {
             listPanel.add(empty);
         } else {
             for (Restaurant r : restaurants) {
-                listPanel.add(buildRestaurantCard(r));
+                double dist = hasCoords ? distanceKm(customerLat, customerLng,
+                        r.getLocation().getLatitude(), r.getLocation().getLongitude()) : -1;
+                listPanel.add(buildRestaurantCard(r, dist));
                 listPanel.add(Box.createVerticalStrut(12));
             }
         }
@@ -60,7 +72,13 @@ public class RestaurantListScreen extends JPanel {
         listPanel.repaint();
     }
 
-    private JPanel buildRestaurantCard(Restaurant restaurant) {
+    private double distanceKm(double lat1, double lon1, double lat2, double lon2) {
+        double dx = (lat1 - lat2) * 111.0;
+        double dy = (lon1 - lon2) * 111.0 * Math.cos(Math.toRadians((lat1 + lat2) / 2.0));
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    private JPanel buildRestaurantCard(Restaurant restaurant, double distanceKm) {
         JPanel card = UIHelper.cardPanel();
         card.setLayout(new BorderLayout(12, 0));
         card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 90));
@@ -72,9 +90,9 @@ public class RestaurantListScreen extends JPanel {
         info.setLayout(new BoxLayout(info, BoxLayout.Y_AXIS));
 
         JLabel name = UIHelper.label(restaurant.getName(), AppColors.FONT_HEADING, AppColors.TEXT_PRIMARY);
-        JLabel details = UIHelper.label(
-            restaurant.getCategory() + "  •  " + restaurant.getAddress() + "  •  " + restaurant.getOpenHours(),
-            AppColors.FONT_SMALL, AppColors.TEXT_MUTED);
+        String detailText = restaurant.getCategory() + "  •  " + restaurant.getAddress() + "  •  " + restaurant.getOpenHours();
+        if (distanceKm >= 0) detailText += String.format("  •  %.1f km away", distanceKm);
+        JLabel details = UIHelper.label(detailText, AppColors.FONT_SMALL, AppColors.TEXT_MUTED);
 
         info.add(name);
         info.add(Box.createVerticalStrut(4));
@@ -83,7 +101,7 @@ public class RestaurantListScreen extends JPanel {
         // Right: rating + order button
         JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         right.setBackground(AppColors.BG_CARD);
-        JLabel rating = UIHelper.label("★ " + restaurant.getRating(), AppColors.FONT_BODY, AppColors.ACCENT);
+        JLabel rating = UIHelper.label(String.format("★ %.1f", restaurant.getAverageRating()), AppColors.FONT_BODY, AppColors.ACCENT);
         JButton orderBtn = UIHelper.primaryButton("View Menu");
         orderBtn.setPreferredSize(new Dimension(110, 34));
         orderBtn.addActionListener(e -> frame.showMenu(restaurant));
@@ -102,7 +120,7 @@ public class RestaurantListScreen extends JPanel {
         bar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, AppColors.BORDER));
         JButton back = UIHelper.secondaryButton("<- Back");
         back.setPreferredSize(new Dimension(90, 34));
-        back.addActionListener(e -> frame.showScreen(MainFrame.SCREEN_LANDING));
+        back.addActionListener(e -> frame.showScreen(MainFrame.SCREEN_CUSTOMER_DASHBOARD));
         JButton refresh = UIHelper.secondaryButton("r Refresh");
         refresh.setPreferredSize(new Dimension(100, 34));
         refresh.addActionListener(e -> refreshList());

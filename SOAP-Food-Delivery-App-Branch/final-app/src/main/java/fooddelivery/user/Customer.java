@@ -8,6 +8,8 @@ import java.util.ArrayList;
 public class Customer extends User {
 
     private String address;
+    private double latitude;
+    private double longitude;
     private List<Order> orderHistory = new ArrayList<>();
     private Order currentOrder = new Order();
 
@@ -15,6 +17,14 @@ public class Customer extends User {
 
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+
+    public double getLatitude()              { return latitude; }
+    public void   setLatitude(double lat)    { this.latitude = lat; }
+
+    public double getLongitude()             { return longitude; }
+    public void   setLongitude(double lon)   { this.longitude = lon; }
+
+    public boolean hasCoordinates()          { return latitude != 0.0 || longitude != 0.0; }
 
     public List<Order> getOrderHistory() { return orderHistory; }
     public void setOrderHistory(List<Order> orderHistory) { this.orderHistory = orderHistory; }

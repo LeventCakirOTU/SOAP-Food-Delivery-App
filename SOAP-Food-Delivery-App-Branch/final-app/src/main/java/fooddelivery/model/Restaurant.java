@@ -13,11 +13,11 @@ public class Restaurant {
     private double   rating;
     private Menu     menu = new Menu();
     private Location location;
-    private List<String> activeOrders = new ArrayList<>();
+    private List<String>  activeOrders = new ArrayList<>();
+    private List<Integer> ratings      = new ArrayList<>();  // dynamic ratings list
 
     public Restaurant() {}
 
-    // Getters and Setters
     public String getId()               { return id; }
     public void   setId(String id)      { this.id = id; }
 
@@ -45,18 +45,25 @@ public class Restaurant {
     public List<String> getActiveOrders()                       { return activeOrders; }
     public void         setActiveOrders(List<String> orders)    { this.activeOrders = orders; }
 
-    // Logic Methods
+    public void addRating(int stars) {
+        if (stars >= 1 && stars <= 5) ratings.add(stars);
+    }
+
+    public double getAverageRating() {
+        if (ratings.isEmpty()) return rating;
+        int sum = 0;
+        for (int r : ratings) sum += r;
+        return (double) sum / ratings.size();
+    }
+
     public void addMenuItem(MenuItem item) {
         menu.addItem(item);
-        // Re-added the print statement from your first snippet for better feedback
         System.out.println("Added item: " + item.getName() + " to " + this.name);
     }
 
     public void removeMenuItem(String itemId) {
         menu.removeItem(itemId);
     }
-
-    // New helper method for the dummy driver/app logic
     public void addActiveOrder(String orderId) {
         this.activeOrders.add(orderId);
     }

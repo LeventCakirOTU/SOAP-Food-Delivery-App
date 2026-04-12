@@ -4,24 +4,16 @@ import fooddelivery.service.UserService;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Login screen
- * TODO: complete UserService.login().
- */
 public class LoginScreen extends JPanel {
 
-    private final JTextField emailField;
+    private final JTextField    emailField;
     private final JPasswordField passwordField;
 
     public LoginScreen(MainFrame frame, UserService userService) {
         setLayout(new BorderLayout());
         setBackground(AppColors.BG_DARK);
+        add(buildTopBar(frame), BorderLayout.NORTH);
 
-        // back button
-        JPanel topBar = buildTopBar(frame);
-        add(topBar, BorderLayout.NORTH);
-
-        // label box called center
         JPanel center = new JPanel(new GridBagLayout());
         center.setBackground(AppColors.BG_DARK);
 
@@ -43,7 +35,6 @@ public class LoginScreen extends JPanel {
         JButton loginBtn = UIHelper.primaryButton("Sign In");
         loginBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 42));
         loginBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-
         loginBtn.addActionListener(e -> handleLogin(frame, userService));
 
         card.add(title);
@@ -76,16 +67,27 @@ public class LoginScreen extends JPanel {
         fooddelivery.user.User user = userService.login(email, password);
 
         if (user == null) {
-            UIHelper.showError(this, "Login failed. Incorrect email or password.");
+            // Distinguish between wrong credentials and suspended account
+            // by checking if the email exists at all
+            fooddelivery.user.User found = userService.findByEmail(email);
+            if (found != null && userService.isSuspended(found.getId())) {
+                UIHelper.showError(this, "This account has been suspended. Please contact an administrator.");
+            } else {
+                UIHelper.showError(this, "Login failed. Incorrect email or password.");
+            }
             return;
         }
+
+        frame.setCurrentUser(user);
 
         if (user instanceof fooddelivery.user.Customer) {
             frame.showScreen(MainFrame.SCREEN_CUSTOMER_DASHBOARD);
         } else if (user instanceof fooddelivery.user.Driver) {
-            frame.showScreen(MainFrame.SCREEN_DRIVER_DASHBOARD);
+            frame.showDriverDashboard();
         } else if (user instanceof fooddelivery.user.RestaurantOwner) {
             frame.showScreen(MainFrame.SCREEN_MANAGER_DASHBOARD);
+        } else if (user instanceof fooddelivery.user.Admin) {
+            frame.showScreen(MainFrame.SCREEN_ADMIN_DASHBOARD);
         } else {
             UIHelper.showError(this, "Unknown account type.");
         }

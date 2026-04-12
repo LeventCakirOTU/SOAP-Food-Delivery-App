@@ -2,28 +2,36 @@ package fooddelivery.model;
 
 public class MenuItem {
 
-    private String id;
-    private String name;
-    private String description;
-    private double price;
-    private String category;
+    private String  id;
+    private String  name;
+    private String  description;
+    private double  price;
+    private String  category;
+    private boolean available = true;   // NEW
+    private int     preparationTime;    // minutes
 
     public MenuItem() {}
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public int  getPreparationTime()                    { return preparationTime; }
+    public void setPreparationTime(int preparationTime) { this.preparationTime = preparationTime; }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getId()                  { return id; }
+    public void   setId(String id)         { this.id = id; }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getName()                { return name; }
+    public void   setName(String name)     { this.name = name; }
 
-    public double getPrice() { return price; }
-    public void setPrice(double price) { this.price = price; }
+    public String getDescription()                     { return description; }
+    public void   setDescription(String description)   { this.description = description; }
 
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
+    public double getPrice()               { return price; }
+    public void   setPrice(double price)   { this.price = price; }
+
+    public String getCategory()                { return category; }
+    public void   setCategory(String category) { this.category = category; }
+
+    public boolean isAvailable()               { return available; }          // NEW
+    public void    setAvailable(boolean avail) { this.available = avail; }    // NEW
 
     @Override
     public boolean equals(Object o) {

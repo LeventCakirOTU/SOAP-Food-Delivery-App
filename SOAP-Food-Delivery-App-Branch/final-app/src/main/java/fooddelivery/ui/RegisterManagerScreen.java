@@ -4,9 +4,6 @@ import fooddelivery.service.UserService;
 import javax.swing.*;
 import java.awt.*;
 
-/*
- * TODO: wire up UserService.registerManager() on submit.
- */
 public class RegisterManagerScreen extends JPanel {
 
     private final JTextField nameField;

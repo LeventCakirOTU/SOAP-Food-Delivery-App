@@ -4,6 +4,7 @@ import fooddelivery.model.DeliveryTask;
 import fooddelivery.model.Order;
 import fooddelivery.service.DeliveryService;
 import fooddelivery.service.OrderService;
+import fooddelivery.user.Driver;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
@@ -12,6 +13,8 @@ public class DriverDashboardScreen extends JPanel {
 
     private final OrderService    orderService;
     private final DeliveryService deliveryService;
+    private       JLabel          availabilityLabel;
+    private       JButton         toggleAvailBtn;
 
     public DriverDashboardScreen(MainFrame frame, OrderService orderService, DeliveryService deliveryService) {
         this.orderService    = orderService;
@@ -26,10 +29,20 @@ public class DriverDashboardScreen extends JPanel {
 
         JPanel card = UIHelper.cardPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-        card.setPreferredSize(new Dimension(500, 260));
+        card.setPreferredSize(new Dimension(520, 340));
 
         JLabel title = UIHelper.label("Driver Dashboard", AppColors.FONT_TITLE, AppColors.ACCENT);
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // driver availabilty
+        JPanel availRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 0));
+        availRow.setBackground(AppColors.BG_CARD);
+        availabilityLabel = UIHelper.label("Status: Offline", AppColors.FONT_BODY, AppColors.ERROR);
+        toggleAvailBtn = UIHelper.secondaryButton("Go Online");
+        toggleAvailBtn.setPreferredSize(new Dimension(120, 32));
+        toggleAvailBtn.addActionListener(e -> toggleAvailability(frame));
+        availRow.add(availabilityLabel);
+        availRow.add(toggleAvailBtn);
 
         JButton availableBtn = UIHelper.primaryButton("View Available Orders");
         availableBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -40,7 +53,9 @@ public class DriverDashboardScreen extends JPanel {
         statusBtn.addActionListener(e -> showUpdateStatusDialog(frame));
 
         card.add(title);
-        card.add(Box.createVerticalStrut(30));
+        card.add(Box.createVerticalStrut(16));
+        card.add(availRow);
+        card.add(Box.createVerticalStrut(24));
         card.add(availableBtn);
         card.add(Box.createVerticalStrut(12));
         card.add(statusBtn);
@@ -49,11 +64,38 @@ public class DriverDashboardScreen extends JPanel {
         add(center, BorderLayout.CENTER);
     }
 
+    // reflects current driver state
+    public void refresh(MainFrame frame) {
+        if (frame.getCurrentUser() instanceof Driver driver) {
+            updateAvailUI(driver.isAvailable());
+        }
+    }
+
+    private void toggleAvailability(MainFrame frame) {
+        if (!(frame.getCurrentUser() instanceof Driver driver)) return;
+        driver.setAvailable(!driver.isAvailable());
+        updateAvailUI(driver.isAvailable());
+    }
+
+    private void updateAvailUI(boolean online) {
+        if (online) {
+            availabilityLabel.setText("Status: Online");
+            availabilityLabel.setForeground(AppColors.SUCCESS);
+            toggleAvailBtn.setText("Go Offline");
+        } else {
+            availabilityLabel.setText("Status: Offline");
+            availabilityLabel.setForeground(AppColors.ERROR);
+            toggleAvailBtn.setText("Go Online");
+        }
+    }
+
+    // Avaiable orders - dialog
+
     private void showAvailableOrders(MainFrame frame) {
         List<Order> orders = orderService.getAllOrders();
 
         JDialog dialog = new JDialog(frame, "Available Orders", true);
-        dialog.setSize(500, 380);
+        dialog.setSize(520, 400);
         dialog.setLocationRelativeTo(frame);
         dialog.getContentPane().setBackground(AppColors.BG_DARK);
         dialog.setLayout(new BorderLayout());
@@ -96,7 +138,7 @@ public class DriverDashboardScreen extends JPanel {
     private JPanel buildOrderCard(Order order, MainFrame frame, JDialog parent) {
         JPanel card = UIHelper.cardPanel();
         card.setLayout(new BorderLayout(10, 0));
-        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
         card.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JPanel info = new JPanel();
@@ -107,12 +149,19 @@ public class DriverDashboardScreen extends JPanel {
         info.add(UIHelper.label(itemCount + "  •  $" + String.format("%.2f", order.getTotalPrice()),
                 AppColors.FONT_SMALL, AppColors.TEXT_MUTED));
 
+        // Show special instructions if present
+        if (order.getSpecialInstructions() != null && !order.getSpecialInstructions().isBlank()) {
+            info.add(UIHelper.label("Note: " + order.getSpecialInstructions(),
+                    AppColors.FONT_SMALL, new Color(255, 200, 50)));
+        }
+
         JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         right.setBackground(AppColors.BG_CARD);
         right.add(UIHelper.label(order.getStatus() != null ? order.getStatus() : "PENDING",
                 AppColors.FONT_SMALL, statusColor(order.getStatus())));
 
         if ("PENDING".equals(order.getStatus())) {
+            // accept
             JButton acceptBtn = UIHelper.primaryButton("Accept");
             acceptBtn.setPreferredSize(new Dimension(90, 32));
             acceptBtn.addActionListener(e -> {
@@ -126,6 +175,17 @@ public class DriverDashboardScreen extends JPanel {
                 UIHelper.showSuccess(this, "Order #" + order.getId() + " accepted!");
                 parent.dispose();
             });
+
+            // Reject
+            JButton rejectBtn = UIHelper.secondaryButton("Reject");
+            rejectBtn.setPreferredSize(new Dimension(90, 32));
+            rejectBtn.addActionListener(e -> {
+                order.setStatus("CANCELLED");
+                UIHelper.showSuccess(this, "Order #" + order.getId() + " rejected.");
+                parent.dispose();
+            });
+
+            right.add(rejectBtn);
             right.add(acceptBtn);
         }
 
@@ -134,6 +194,7 @@ public class DriverDashboardScreen extends JPanel {
         return card;
     }
 
+    // update status dialog
     private void showUpdateStatusDialog(MainFrame frame) {
         List<DeliveryTask> tasks = deliveryService.getAllTasks();
 
@@ -192,7 +253,7 @@ public class DriverDashboardScreen extends JPanel {
                     Order linked = orderService.getOrder(selected.getOrderId());
                     if (linked != null) linked.setStatus("DELIVERED");
                 }
-                UIHelper.showSuccess(this, "Task #" + selected.getId() + " updated to: " + newStatus);
+                UIHelper.showSuccess(this, "Task #" + selected.getId() + " → " + newStatus);
                 dialog.dispose();
             });
 
@@ -227,7 +288,7 @@ public class DriverDashboardScreen extends JPanel {
         JButton logout = UIHelper.secondaryButton("Logout");
         logout.setPreferredSize(new Dimension(90, 34));
         logout.addActionListener(e -> { frame.setCurrentUser(null); frame.showScreen(MainFrame.SCREEN_LANDING); });
-        bar.add(UIHelper.label("SOAP - Driver", AppColors.FONT_HEADING, AppColors.ACCENT));
+        bar.add(UIHelper.label("Driver", AppColors.FONT_HEADING, AppColors.ACCENT));
         bar.add(Box.createHorizontalGlue());
         bar.add(logout);
         return bar;

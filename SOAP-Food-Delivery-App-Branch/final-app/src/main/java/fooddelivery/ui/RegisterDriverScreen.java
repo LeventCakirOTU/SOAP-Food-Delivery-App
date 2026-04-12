@@ -4,9 +4,6 @@ import fooddelivery.service.UserService;
 import javax.swing.*;
 import java.awt.*;
 
-/*
- * TODO: wire up UserService.registerDriver() on submit.
- */
 public class RegisterDriverScreen extends JPanel {
 
     private final JTextField nameField;

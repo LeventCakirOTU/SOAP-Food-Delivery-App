@@ -4,6 +4,7 @@ import fooddelivery.model.Location;
 import fooddelivery.model.Restaurant;
 import fooddelivery.service.RestaurantService;
 import fooddelivery.service.UserService;
+import fooddelivery.user.Admin;
 import fooddelivery.user.Customer;
 import fooddelivery.user.Driver;
 import fooddelivery.user.RestaurantOwner;
@@ -49,6 +50,7 @@ public class MainApp {
         r1i1.setDescription("Grilled chicken");
         r1i1.setPrice(10.0);
         r1i1.setCategory("MEAT");
+        r1i1.setPreparationTime(15);
         r1.addMenuItem(r1i1);
 
         fooddelivery.model.MenuItem r1i2 = new fooddelivery.model.MenuItem();
@@ -57,6 +59,8 @@ public class MainApp {
         r1i2.setDescription("Crispy fries");
         r1i2.setPrice(4.0);
         r1i2.setCategory("SIDE");
+        r1i2.setPreparationTime(5);
+        r1i2.setAvailable(false);
         r1.addMenuItem(r1i2);
 
         // Menu items for Restaurant 2
@@ -66,6 +70,7 @@ public class MainApp {
         r2i1.setDescription("Fresh salad");
         r2i1.setPrice(6.01);
         r2i1.setCategory("VEGETARIAN");
+        r2i1.setPreparationTime(7);
         r2.addMenuItem(r2i1);
 
         fooddelivery.model.MenuItem r2i2 = new fooddelivery.model.MenuItem();
@@ -74,6 +79,7 @@ public class MainApp {
         r2i2.setDescription("Beef burger");
         r2i2.setPrice(9.3);
         r2i2.setCategory("MEAT");
+        r2i2.setPreparationTime(12);
         r2.addMenuItem(r2i2);
 
         restaurantService.registerRestaurant(r1);
@@ -102,6 +108,13 @@ public class MainApp {
         owner.setEmail("mike@teamail.com");
         owner.setPassword("mikey77");
         userService.registerUser(owner);
+
+        Admin admin = new Admin();
+        admin.setId("a1");
+        admin.setName("Admin");
+        admin.setEmail("admin@email.com");
+        admin.setPassword("admin123");
+        userService.registerUser(admin);
 
         // Launch GUI
         System.setProperty("awt.useSystemAAFontSettings", "on");
