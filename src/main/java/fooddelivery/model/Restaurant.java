@@ -11,9 +11,10 @@ public class Restaurant {
     private String   address;
     private String   openHours;
     private double   rating;
-    private Menu     menu     = new Menu();
+    private Menu     menu = new Menu();
     private Location location;
-    private List<String> activeOrders = new ArrayList<>();
+    private List<String>  activeOrders = new ArrayList<>();
+    private List<Integer> ratings      = new ArrayList<>();  // dynamic ratings list
 
     public Restaurant() {}
 
@@ -44,6 +45,26 @@ public class Restaurant {
     public List<String> getActiveOrders()                       { return activeOrders; }
     public void         setActiveOrders(List<String> orders)    { this.activeOrders = orders; }
 
-    public void addMenuItem(MenuItem item)      { menu.addItem(item); }
-    public void removeMenuItem(String itemId)   { menu.removeItem(itemId); }
+    public void addRating(int stars) {
+        if (stars >= 1 && stars <= 5) ratings.add(stars);
+    }
+
+    public double getAverageRating() {
+        if (ratings.isEmpty()) return rating;
+        int sum = 0;
+        for (int r : ratings) sum += r;
+        return (double) sum / ratings.size();
+    }
+
+    public void addMenuItem(MenuItem item) {
+        menu.addItem(item);
+        System.out.println("Added item: " + item.getName() + " to " + this.name);
+    }
+
+    public void removeMenuItem(String itemId) {
+        menu.removeItem(itemId);
+    }
+    public void addActiveOrder(String orderId) {
+        this.activeOrders.add(orderId);
+    }
 }

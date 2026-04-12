@@ -5,12 +5,11 @@ The purpose of this project is to create a food delivery app with four main type
 The main goal is to create a user interface which enables customers to browse nearby restaurants, explore their menus and place orders, but also allow delivery drivers to accept and manage their tasks, as well as allow restaurant owners to include their business and sell their products visible in their menu. Throughout the development of this project, the team will ensure the final product is delivered to meet the client’s expectations on time. The expected outcome of this project is to have a fully functioning delivery app where customers can easily order food from various restaurants in their vicinity. 
 
 Iteration 1: COMPLETE  
-Iteration 2: COMPLETE  
-Iteration 3: In Progress  
+Iteration 2: In Progress  
+Iteration 3: Not Under Development  
 
-# Present Burndown Chart (April 6, 2026)
-<img width="849" height="458" alt="Screenshot 2026-04-08 080817" src="https://github.com/user-attachments/assets/f3cc25cc-6166-4e48-b322-f6794c4bce62" />
-
+# Present Burndown Chart
+<img width="844" height="451" alt="image" src="https://github.com/user-attachments/assets/da20759c-4acd-4a17-8998-36ec43311753" />
 
 # Basic Setup Instructions:
 Initial IDE Build Tool Requirements: Find pom.xml in the directory, right click and select add as a maven project. Navigate to Settings>Build,Execution,Deployment>Build Tools>Maven>Runner. From there, select an SDK and enable Delegate IDE build/run actions to Maven.  
