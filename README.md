@@ -6,11 +6,10 @@ The main goal is to create a user interface which enables customers to browse ne
 
 Iteration 1: COMPLETE  
 Iteration 2: COMPLETE  
-Iteration 3: In Progress  
+Iteration 3: COMPLETE
 
-# Present Burndown Chart (April 6, 2026)
-<img width="849" height="458" alt="Screenshot 2026-04-08 080817" src="https://github.com/user-attachments/assets/f3cc25cc-6166-4e48-b322-f6794c4bce62" />
-
+# Present Burndown Chart (April 12, 2026)
+<img width="846" height="458" alt="Screenshot 2026-04-12 182703" src="https://github.com/user-attachments/assets/a819eb7f-4fd7-43d7-86ea-45dacf658795" />
 
 # Basic Setup Instructions:
 Initial IDE Build Tool Requirements: Find pom.xml in the directory, right click and select add as a maven project. Navigate to Settings>Build,Execution,Deployment>Build Tools>Maven>Runner. From there, select an SDK and enable Delegate IDE build/run actions to Maven.  
