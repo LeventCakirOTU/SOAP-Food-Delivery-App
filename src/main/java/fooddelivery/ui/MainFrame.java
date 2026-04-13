@@ -54,7 +54,7 @@ public class MainFrame extends JFrame {
         this.deliveryService   = new DeliveryService();
         this.ratingService     = new RatingService();
 
-        setTitle("SOAP — Food Delivery");
+        setTitle("SOAP - Food Delivery");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(960, 640);
         setMinimumSize(new Dimension(800, 540));
