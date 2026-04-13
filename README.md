@@ -47,6 +47,8 @@ To Create a Restaurant:
 ## Video Demonstration:
 https://github.com/user-attachments/assets/859be62e-6ee9-4bfa-86c6-dd106b366790
 
+https://github.com/user-attachments/assets/948cab72-2611-45a6-92d8-7a6b061ed350
+
 ## Contributors:
 ### Levent Cakir
 * General team management
