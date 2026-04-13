@@ -1,7 +1,7 @@
 # SOAP-Food-Delivery-App
-The purpose of this project is to create a food delivery app with four main types of users.
 
 ## Overview:
+The purpose of this project was to create a food delivery app with four main types of users: Customers, Drivers, Restaurant Managers, and Admins. All users interact with the application in different ways. Restaurant Managers can add their restaurant pages to the app, displaying their menu, hours of operation, and location. Customers can view these pages and place orders, which get sent to drivers. Drivers are then able to accept (or reject) orders and pick them up at the restaurant while also providing real-time updates to the customer. Admins have full control over all accounts and services on the app including: Account deactivation, Removing a restaurant's page, and Sensitive account information.
 
 ## High level goals & expected outcomes:
 The main goal is to create a user interface which enables customers to browse nearby restaurants, explore their menus and place orders, but also allow delivery drivers to accept and manage their tasks, as well as allow restaurant owners to include their business and sell their products visible in their menu. Throughout the development of this project, the team will ensure the final product is delivered to meet the client’s expectations on time. The expected outcome of this project is to have a fully functioning delivery app where customers can easily order food from various restaurants in their vicinity. 
@@ -56,13 +56,13 @@ https://github.com/user-attachments/assets/859be62e-6ee9-4bfa-86c6-dd106b366790
 https://github.com/user-attachments/assets/948cab72-2611-45a6-92d8-7a6b061ed350
 
 ## Contributors:
-### Levent Cakir
+### Levent Cakir (Project Manager):
 Meeting and organizational contributions with minimal commits to branches. Responsible for creating the initial skeleton for the application and implementing small features in development branches.
-### Ryan Lildhar
+### Ryan Lildhar (Front-end Lead):
 Major contributions to the development of the UI, integration and back end functionality. Commit history is reflective of overall contribution. Responsible for UI design, integration and main functionality.
-### Dylan Reid
+### Dylan Reid (Back-end Lead):
 Responsible for back-end development in development Branch1, including a large part of feature functionality and design. Also contributions to build scripts and the package executable. Effort and work is not recorded and reflected in the GitHub repository.
-### Greg Merola
+### Greg Merola (Software Quality Lead):
 Responsible for overviewing program code and design. Main contributor to project and feature tests in the ‘test’ branch. Work is not reflected in the GitHub records due to development progress being on local devices. 
-### Edwin Li
+### Edwin Li (Technical Manager):
 Responsible for tracking development progress and assistance in feature implementation and programming. Contributions are less evident with commit changes due to collaboration.
