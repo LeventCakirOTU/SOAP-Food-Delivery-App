@@ -6,12 +6,12 @@ The purpose of this project is to create a food delivery app with four main type
 ## High level goals & expected outcomes:
 The main goal is to create a user interface which enables customers to browse nearby restaurants, explore their menus and place orders, but also allow delivery drivers to accept and manage their tasks, as well as allow restaurant owners to include their business and sell their products visible in their menu. Throughout the development of this project, the team will ensure the final product is delivered to meet the client’s expectations on time. The expected outcome of this project is to have a fully functioning delivery app where customers can easily order food from various restaurants in their vicinity. 
 
-## Iteration Progress
+## Iteration Progress:
 Iteration 1: COMPLETE  
 Iteration 2: COMPLETE  
 Iteration 3: COMPLETE
 
-## Final Burndown Chart (April 13, 2026)
+## Final Burndown Chart (April 13, 2026):
 <img width="846" height="458" alt="Screenshot 2026-04-12 182703" src="https://github.com/user-attachments/assets/a819eb7f-4fd7-43d7-86ea-45dacf658795" />
 
 ## Basic Setup Instructions:
@@ -30,7 +30,6 @@ To Create a Restaurant:
 2) Fill in the attributes of the restaurant in the designated areas (optional: add starter menu items).
 
 ## Running the JAR file instructions:
-
 1) Download the file food-delivery-app.jar.
 2) Find the location food-delivery-app.jar is stored in.
 3) Open a terminal in the folder where the file is located. You can do this by right-clicking inside the folder and selecting “Open PowerShell window here” or “Open Terminal here”.
@@ -58,23 +57,12 @@ https://github.com/user-attachments/assets/948cab72-2611-45a6-92d8-7a6b061ed350
 
 ## Contributors:
 ### Levent Cakir
-* General team management
-* README basic setup instructions
+Meeting and organizational contributions with minimal commits to branches. Responsible for creating the initial skeleton for the application and implementing small features in development branches.
 ### Ryan Lildhar
-* App GUI
-* UI and back-end integration
-* Implemented features:
-  - Checkout
-  - Order history
+Major contributions to the development of the UI, integration and back end functionality. Commit history is reflective of overall contribution. Responsible for UI design, integration and main functionality.
 ### Dylan Reid
-* Build scripts
-* Implemented features:
-  - Search filter
-  - Restaurant proximity
+Responsible for back-end development in development Branch1, including a large part of feature functionality and design. Also contributions to build scripts and the package executable. Effort and work is not recorded and reflected in the GitHub repository.
 ### Greg Merola
-* Unit tests
-* Testing plan
+Responsible for overviewing program code and design. Main contributor to project and feature tests in the ‘test’ branch. Work is not reflected in the GitHub records due to development progress being on local devices. 
 ### Edwin Li
-* Team productivity + velocity calculations
-* README file documentation
-* Phase documents
+Responsible for tracking development progress and assistance in feature implementation and programming. Contributions are less evident with commit changes due to collaboration.
