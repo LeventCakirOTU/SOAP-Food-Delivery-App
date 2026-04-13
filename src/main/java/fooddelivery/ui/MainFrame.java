@@ -101,7 +101,6 @@ public class MainFrame extends JFrame {
     public void goBack() { showScreen(previousScreen); }
 
     // cart helper
-
     public Order getCurrentCart() { return currentCart; }
 
     public void resetCart() {
@@ -110,7 +109,6 @@ public class MainFrame extends JFrame {
     }
 
     // screen accessors
-
     public CartScreen         getCartScreen()         { return cartScreen; }
     public OrderHistoryScreen getOrderHistoryScreen() { return orderHistoryScreen; }
 
