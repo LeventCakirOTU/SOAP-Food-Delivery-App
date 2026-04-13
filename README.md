@@ -29,6 +29,13 @@ To Create a Restaurant:
 1) In the main menu, select 'Add Restaurant'.
 2) Fill in the attributes of the restaurant in the designated areas (optional: add starter menu items).
 
+## Running the JAR file instructions:
+
+1) Download the file food-delivery-app.jar.
+2) Find the location food-delivery-app.jar is stored in.
+3) Open a terminal in the folder where the file is located. You can do this by right-clicking inside the folder and selecting “Open PowerShell window here” or “Open Terminal here”.
+4) Run the application using the command java -jar food-delivery-app.jar.
+
 ## Features:
 - Customers, Drivers, Restaurant Managers, and Admins have separate logins
 - Customers can order menu items from a list of restaurants
