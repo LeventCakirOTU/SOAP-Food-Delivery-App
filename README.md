@@ -25,3 +25,11 @@ To View Restaurants:
 To Create a Restaurant:  
 1) In the main menu, select 'Add Restaurant'.
 2) Fill in the attributes of the restaurant in the designated areas (optional: add starter menu items).
+
+# Video Demonstration:
+
+https://github.com/user-attachments/assets/859be62e-6ee9-4bfa-86c6-dd106b366790
+
+
+
+
